@@ -276,7 +276,7 @@
   min-height: 0;
   overflow-y: auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   gap: 0.5rem;
   align-content: start;
   padding: 2px;
@@ -413,4 +413,43 @@
 /* Scene soundtrack dialog */
 .sst-scene-dialog .hint {
   margin-top: 0.25rem;
+}
+
+/* Import / export (below the playlist library, only as tall as its content) */
+.sst-transfer {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0.25rem 0.5rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.sst-transfer .hint {
+  margin: 0;
+}
+.sst-transfer-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+.sst-transfer-buttons button {
+  flex: 1;
+  height: 28px;
+  min-height: 0;
+  white-space: nowrap;
+}
+.sst-import-dialog .form-group.stacked {
+  flex-direction: column;
+  align-items: stretch;
+}
+.sst-import-dialog .hint {
+  margin: 0 0 0.4rem 1.6rem;
+}
+
+.sst-help summary {
+  cursor: pointer;
+  font-size: var(--font-size-12, 12px);
+  opacity: 0.8;
+}
+.sst-help .hint {
+  margin: 0.25rem 0 0;
 }

@@ -10,6 +10,7 @@ import { SoundtrackEngine } from "./engine.js";
 import { ControlPanel } from "./apps/control-panel.js";
 import { injectBar, refreshSidebar } from "./sidebar.js";
 import { registerSceneHooks, promptSceneScenario, playSceneScenario } from "./scenes.js";
+import * as transfer from "./transfer.js";
 
 let engine = null;
 let panel = null;
@@ -95,6 +96,9 @@ Hooks.once("ready", () => {
     openPanel,
     bindScene: scene => promptSceneScenario(scene ?? canvas.scene, { change: true }),
     playSceneScenario,
+    exportSetup: transfer.exportToFile,
+    /** Import an export (object or JSON text). options: { mode: "merge"|"replace", scenes: boolean } */
+    importSetup: (data, options) => transfer.applyImport(transfer.parseExport(data), options),
     engine
   };
 

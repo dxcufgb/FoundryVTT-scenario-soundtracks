@@ -22,6 +22,7 @@ https://github.com/dxcufgb/FoundryVTT-scenario-soundtracks/releases/latest/downl
 - **Everyone hears the same music.** When the GM starts a scenario, every connected player's client plays it. Players who join later start it too.
 - **Volume.** The music follows each person's own **Music** slider in the Playlists tab, the same slider Foundry's own playlists use. A player who wants it quieter just moves that slider. **Play soundtracks on this computer** (Configure Settings) turns it off completely for one person.
 - **Scene soundtracks.** When the GM views a scene that hasn't been set up yet, a small dialog asks which scenario soundtrack belongs to it, and suggests one based on the scene's name. Choose a scenario, **No soundtrack**, or **Ask later**. When a scene with a soundtrack is activated, that scenario starts for everyone. To change it later, right-click the scene in the Scenes tab or the navigation bar and choose **Scenario soundtrack…**. Turn the question off under **Configure Settings → Ask for a soundtrack when viewing a new scene**.
+- **Import / export.** Save your whole setup to a file from the control panel: folders, playlists, scenarios and themes with their bound playlists, combat automation and scene soundtracks. You can then import it in another world. You can add it to that world's setup (playlists, folders and themes already there aren't duplicated) or replace that setup. Scene soundtracks are applied to scenes with the same name.
 - **Combat automation.** You can choose a scenario that starts when combat begins (Combat by default). When the combat is deleted, the music goes back to what was playing before.
 
 ## Using it (GM)
@@ -45,6 +46,8 @@ sst.playList("Spooky ambience");     // one playlist, by id or name
 sst.togglePause(); sst.skipTrack(); sst.nextList(); sst.stop();
 sst.openPanel();
 sst.bindScene();                     // ask which scenario belongs to the current scene
+sst.exportSetup();                   // download the whole setup as a file
+sst.importSetup(json, { mode: "merge", scenes: true });  // or mode: "replace"
 ```
 
 ## YouTube / YouTube Music
