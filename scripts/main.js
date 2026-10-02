@@ -9,6 +9,7 @@ import * as playback from "./state.js";
 import { SoundtrackEngine } from "./engine.js";
 import { ControlPanel } from "./apps/control-panel.js";
 import { injectBar, refreshSidebar } from "./sidebar.js";
+import { registerSceneHooks, promptSceneScenario, playSceneScenario } from "./scenes.js";
 
 let engine = null;
 let panel = null;
@@ -53,6 +54,11 @@ Hooks.once("init", () => {
     scope: "client", config: true, type: Boolean, default: true,
     onChange: () => onChange()
   });
+  game.settings.register(MODULE_ID, SETTINGS.askOnNewScene, {
+    name: "SST.Settings.AskOnNewScene.Name",
+    hint: "SST.Settings.AskOnNewScene.Hint",
+    scope: "client", config: true, type: Boolean, default: true
+  });
   game.settings.register(MODULE_ID, SETTINGS.spotifyAuth, {
     scope: "client", config: false, type: Object, default: {}
   });
@@ -87,12 +93,16 @@ Hooks.once("ready", () => {
     getState: playback.getState,
     getLibrary: library.getLibrary,
     openPanel,
+    bindScene: scene => promptSceneScenario(scene ?? canvas.scene, { change: true }),
+    playSceneScenario,
     engine
   };
 
   if (ui.playlists?.rendered) injectBar(ui.playlists, ui.playlists.element, engine, openPanel);
   engine.sync();
 });
+
+registerSceneHooks();
 
 /* -------------------------------------------- */
 /*  Music volume                                 */

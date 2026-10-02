@@ -29,6 +29,7 @@ git clone https://github.com/dxcufgb/FoundryVTT-scenario-soundtracks.git dxcufgb
 - **Scenarios and themes.** The module comes with Exploration, Combat, Boss fight, Town, Tavern, Dungeon, Tension, Rest and Victory. You can add your own themes ("Feywild", "Haunted manor", …). Each scenario or theme can have any number of playlists bound to it. When it starts, one of them is picked, either at random (never the same one twice in a row) or in order.
 - **Everyone hears the same music.** When the GM starts a scenario, every connected player's client plays it. Players who join later start it too.
 - **Volume.** The music follows each person's own **Music** slider in the Playlists tab, the same slider Foundry's own playlists use. A player who wants it quieter just moves that slider. **Play soundtracks on this computer** (Configure Settings) turns it off completely for one person.
+- **Scene soundtracks.** When the GM views a scene that hasn't been set up yet, a small dialog asks which scenario soundtrack belongs to it, and suggests one based on the scene's name. Choose a scenario, **No soundtrack**, or **Ask later**. When a scene with a soundtrack is activated, that scenario starts for everyone. To change it later, right-click the scene in the Scenes tab or the navigation bar and choose **Scenario soundtrack…**. Turn the question off under **Configure Settings → Ask for a soundtrack when viewing a new scene**.
 - **Combat automation.** You can choose a scenario that starts when combat begins (Combat by default). When the combat is deleted, the music goes back to what was playing before.
 
 ## Using it (GM)
@@ -50,6 +51,7 @@ sst.playScenario("tavern", { listId: "…" });
 sst.playList("Spooky ambience");     // one playlist, by id or name
 sst.togglePause(); sst.skipTrack(); sst.nextList(); sst.stop();
 sst.openPanel();
+sst.bindScene();                     // ask which scenario belongs to the current scene
 ```
 
 ## YouTube / YouTube Music

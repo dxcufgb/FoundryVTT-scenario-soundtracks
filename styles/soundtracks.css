@@ -409,3 +409,8 @@
   margin-top: 0.5rem;
   font-style: normal;
 }
+
+/* Scene soundtrack dialog */
+.sst-scene-dialog .hint {
+  margin-top: 0.25rem;
+}

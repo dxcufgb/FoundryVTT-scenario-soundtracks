@@ -7,7 +7,8 @@ export const SETTINGS = {
   showToPlayers: "showToPlayers",
   enabled: "enabled",
   spotifyAuth: "spotifyAuth",
-  expandedFolders: "expandedFolders"
+  expandedFolders: "expandedFolders",
+  askOnNewScene: "askOnNewScene"
 };
 
 /** Scenarios every world starts with. Names come from the language file until the GM renames them. */

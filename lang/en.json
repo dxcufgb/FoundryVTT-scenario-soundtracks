@@ -149,6 +149,10 @@
       "Enabled": {
         "Name": "Play soundtracks on this computer",
         "Hint": "Turn off to mute Scenario Soundtracks for you only. To make them quieter, use the Music volume slider in the Playlists tab."
+      },
+      "AskOnNewScene": {
+        "Name": "Ask for a soundtrack when viewing a new scene (GM)",
+        "Hint": "When you view a scene that has no scenario soundtrack decided yet, ask which one belongs to it. Only the GM is asked."
       }
     },
     "Keybindings": {
@@ -162,6 +166,18 @@
       "AlreadyAdded": "added",
       "Preview": "Open on YouTube",
       "Done": "Added {added} suggested playlist(s) and made {bound} scenario binding(s)."
+    },
+    "SceneBinding": {
+      "Title": "Scene soundtrack",
+      "Question": "Do you want a scenario soundtrack for {scene}?",
+      "Scenario": "Scenario",
+      "Hint": "It plays for everyone whenever this scene is activated. Change it later by right-clicking the scene in the Scenes tab or the navigation bar.",
+      "Bind": "Bind",
+      "NoSoundtrack": "No soundtrack",
+      "Later": "Ask later",
+      "ListCount": "{count} playlist(s)",
+      "NoLists": "no playlists yet",
+      "ContextMenu": "Scenario soundtrack…"
     }
   }
 }
