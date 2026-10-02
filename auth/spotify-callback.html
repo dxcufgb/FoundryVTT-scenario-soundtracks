@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Scenario Soundtracks – Spotify</title>
+  <style>body { font-family: sans-serif; background: #191414; color: #fff; display: grid; place-items: center; height: 100vh; margin: 0; }</style>
+</head>
+<body>
+  <p id="message">Connecting to Spotify…</p>
+  <script>
+    // Spotify redirects here after login. Hand the result to the Foundry window that opened the login:
+    // through window.opener when it survived the redirect, and through localStorage (a "storage" event
+    // in the Foundry window) when the browser cut the opener link.
+    const params = new URLSearchParams(window.location.search);
+    const data = {
+      type: "dxcufgbs-scenario-soundtrack-spotify-auth",
+      code: params.get("code"),
+      state: params.get("state"),
+      error: params.get("error")
+    };
+    try { window.opener?.postMessage(data, window.location.origin); } catch (err) { /* opener gone */ }
+    try { localStorage.setItem("dxcufgbs-scenario-soundtrack.spotify-callback", JSON.stringify({ ...data, time: Date.now() })); } catch (err) { /* storage blocked */ }
+    document.getElementById("message").textContent = data.error
+      ? `Spotify login failed: ${data.error}. You can close this window.`
+      : "Connected. You can close this window.";
+    setTimeout(() => window.close(), 500);
+  </script>
+</body>
+</html>
