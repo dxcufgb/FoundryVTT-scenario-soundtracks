@@ -26,6 +26,7 @@
         <div class="sst-header-buttons">
           <button type="button" data-action="createList"><i class="fa-solid fa-plus"></i> {{localize "SST.Library.AddList"}}</button>
           <button type="button" data-action="createFolder" data-tooltip="{{localize "SST.Library.AddFolder"}}"><i class="fa-solid fa-folder-plus"></i></button>
+          <button type="button" data-action="addSuggestions" data-tooltip="{{localize "SST.Suggestions.Title"}}"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
         </div>
       </header>
       <input type="search" class="sst-filter" value="{{filter}}" placeholder="{{localize "SST.Library.Search"}}">
@@ -61,7 +62,8 @@
           </li>
           {{/if}}
         {{/each}}
-        {{#if empty}}<li class="sst-empty">{{localize "SST.Library.Empty"}}</li>{{/if}}
+        {{#if empty}}<li class="sst-empty">{{localize "SST.Library.Empty"}}
+          <button type="button" class="sst-suggest-button" data-action="addSuggestions"><i class="fa-solid fa-wand-magic-sparkles"></i> {{localize "SST.Suggestions.Title"}}</button></li>{{/if}}
       </ol>
       <p class="hint">{{localize "SST.Library.DragHint"}}</p>
     </section>

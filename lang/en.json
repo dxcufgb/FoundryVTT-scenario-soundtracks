@@ -27,7 +27,7 @@
       "Delete": "Delete",
       "BoundCount": "Number of scenarios this playlist is bound to",
       "PlayNow": "Play now for everyone",
-      "Empty": "No playlists yet. Click \"Add playlist\" and paste a Spotify, YouTube or YouTube Music link.",
+      "Empty": "No playlists yet. Click \"Add playlist\" and paste a Spotify, YouTube or YouTube Music link, or start with some suggested playlists.",
       "DragHint": "Drag a playlist onto a scenario to bind it, or onto a folder to move it. Drag a folder onto a scenario to bind every playlist inside it."
     },
     "Scenario": {
@@ -153,6 +153,15 @@
     },
     "Keybindings": {
       "OpenPanel": "Open the Scenario Soundtracks control panel"
+    },
+    "Suggestions": {
+      "Title": "Suggested playlists",
+      "Intro": "YouTube and YouTube Music playlists and long mixes picked for each scenario. They are added to a \"Suggested playlists\" folder and bound to their scenario. They belong to other YouTube channels and can disappear or stop being playable outside YouTube; use the ↗ link to preview one first.",
+      "Folder": "Suggested playlists",
+      "Add": "Add selected",
+      "AlreadyAdded": "added",
+      "Preview": "Open on YouTube",
+      "Done": "Added {added} suggested playlist(s) and made {bound} scenario binding(s)."
     }
   }
 }

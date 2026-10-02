@@ -382,3 +382,30 @@
 .sst-dialog .units {
   flex: 0 0 auto;
 }
+
+/* Suggestions dialog */
+.sst-suggestions {
+  max-height: 65vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.sst-suggestions fieldset {
+  margin: 0 0 0.5rem;
+}
+.sst-suggestion {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 2px 0;
+}
+.sst-suggestion .sst-name {
+  flex: 1;
+}
+.sst-suggestion.added {
+  opacity: 0.6;
+}
+.sst-empty .sst-suggest-button {
+  display: block;
+  margin-top: 0.5rem;
+  font-style: normal;
+}

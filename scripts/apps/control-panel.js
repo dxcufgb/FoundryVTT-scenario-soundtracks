@@ -8,6 +8,7 @@ import { MODULE_ID, SETTINGS, localize, escapeHTML } from "../constants.js";
 import * as library from "../library.js";
 import * as playback from "../state.js";
 import { SpotifyAuth } from "../backends/spotify.js";
+import { SUGGESTIONS } from "../suggestions.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 
@@ -106,6 +107,41 @@ async function scenarioDialog(scenario = {}) {
   return formDialog(localize(scenario.id ? "Dialog.EditScenario" : "Dialog.CreateScenario"), "fa-solid fa-masks-theater", content);
 }
 
+/** Pick suggested playlists to add; resolves to the chosen entries (or null). */
+async function suggestionsDialog(lib) {
+  const groups = lib.scenarios
+    .map(scenario => ({ scenario, items: SUGGESTIONS.map((item, index) => ({ ...item, index })).filter(i => i.scenario === scenario.id) }))
+    .filter(g => g.items.length);
+  const rows = groups.map(({ scenario, items }) => `
+    <fieldset>
+      <legend><i class="${escapeHTML(scenario.icon)}"></i> ${escapeHTML(library.scenarioName(scenario))}</legend>
+      ${items.map(item => {
+        const parsed = library.parseSource(item.url);
+        const have = lib.lists.find(l => library.sameSource(l.url, item.url));
+        const isBound = have && scenario.lists.includes(have.id);
+        return `<label class="sst-suggestion${isBound ? " added" : ""}">
+          <input type="checkbox" name="pick" value="${item.index}"${isBound ? " disabled" : " checked"}>
+          <i class="${library.sourceIcon(parsed)}" data-tooltip="${escapeHTML(library.sourceLabel(parsed))}"></i>
+          <span class="sst-name">${escapeHTML(item.name)}</span>
+          ${isBound ? `<span class="sst-count">${escapeHTML(localize("Suggestions.AlreadyAdded"))}</span>` : ""}
+          <a href="${escapeHTML(item.url)}" target="_blank" rel="noopener" data-tooltip="${escapeHTML(localize("Suggestions.Preview"))}"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+        </label>`;
+      }).join("")}
+    </fieldset>`).join("");
+  return DialogV2.prompt({
+    window: { title: localize("Suggestions.Title"), icon: "fa-solid fa-wand-magic-sparkles" },
+    position: { width: 560 },
+    content: `<div class="sst-dialog sst-suggestions"><p class="hint">${escapeHTML(localize("Suggestions.Intro"))}</p>${rows}</div>`,
+    ok: {
+      label: localize("Suggestions.Add"),
+      icon: "fa-solid fa-plus",
+      callback: (event, button) => [...button.form.querySelectorAll("input[name=pick]:checked:not(:disabled)")]
+        .map(input => SUGGESTIONS[Number(input.value)]).filter(Boolean)
+    },
+    rejectClose: false
+  });
+}
+
 /* -------------------------------------------- */
 /*  Panel                                        */
 /* -------------------------------------------- */
@@ -136,6 +172,7 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
       togglePause: () => playback.togglePause(),
       skipTrack: () => playback.skipTrack(),
       nextList: () => playback.nextList(),
+      addSuggestions: ControlPanel._onAddSuggestions,
       copyRedirect: ControlPanel._onCopyRedirect,
       saveClientId: ControlPanel._onSaveClientId
     }
@@ -453,6 +490,13 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
   static async _onUnbindList(event, target) {
     const scenarioId = target.closest("[data-scenario-id]").dataset.scenarioId;
     return library.unbindList(scenarioId, target.closest("[data-list-id]").dataset.listId);
+  }
+
+  static async _onAddSuggestions() {
+    const picked = await suggestionsDialog(library.getLibrary());
+    if (!picked?.length) return;
+    const { added, bound } = await library.addSuggestions(picked);
+    ui.notifications.info(localize("Suggestions.Done", { added, bound }));
   }
 
   static async _onCopyRedirect() {

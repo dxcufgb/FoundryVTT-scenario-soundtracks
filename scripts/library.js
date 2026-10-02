@@ -338,3 +338,55 @@ export async function updateAutomation(data) {
     Object.assign(lib.automation, data);
   });
 }
+
+/* -------------------------------------------- */
+/*  Suggestions                                  */
+/* -------------------------------------------- */
+
+/** Do two links point at the same playlist/video? */
+export function sameSource(a, b) {
+  const pa = parseSource(a);
+  const pb = parseSource(b);
+  return !!pa && !!pb && pa.source === pb.source && pa.kind === pb.kind && pa.id === pb.id;
+}
+
+/**
+ * Add suggested playlists: each goes into "Suggested playlists / <scenario>" and is bound to its
+ * scenario. Links already in the library are not added again, only bound.
+ * @param {{scenario: string, name: string, url: string}[]} items
+ * @returns {Promise<{added: number, bound: number}>}
+ */
+export async function addSuggestions(items) {
+  return editLibrary(lib => {
+    let added = 0;
+    let bound = 0;
+    let root = lib.folders.find(f => f.suggested === "root");
+    const folderFor = scenario => {
+      if (!root) {
+        root = { id: foundry.utils.randomID(), name: localize("Suggestions.Folder"), parent: null, suggested: "root" };
+        lib.folders.push(root);
+      }
+      let folder = lib.folders.find(f => f.parent === root.id && f.suggested === scenario.id);
+      if (!folder) {
+        folder = { id: foundry.utils.randomID(), name: scenarioName(scenario), parent: root.id, suggested: scenario.id };
+        lib.folders.push(folder);
+      }
+      return folder;
+    };
+    for (const item of items) {
+      const scenario = lib.scenarios.find(s => s.id === item.scenario);
+      if (!scenario) continue;
+      let list = lib.lists.find(l => sameSource(l.url, item.url));
+      if (!list) {
+        list = { id: foundry.utils.randomID(), name: item.name, url: item.url, folder: folderFor(scenario).id, shuffle: true, volume: 1 };
+        lib.lists.push(list);
+        added++;
+      }
+      if (!scenario.lists.includes(list.id)) {
+        scenario.lists.push(list.id);
+        bound++;
+      }
+    }
+    return { added, bound };
+  });
+}

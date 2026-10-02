@@ -35,6 +35,7 @@ git clone https://github.com/dxcufgb/FoundryVTT-scenario-soundtracks.git dxcufgb
 
 1. Open the **Playlists** tab. A Scenario Soundtracks bar is now at the top. Click the sliders button to open the control panel. You can also give the panel a keybinding under **Configure Controls**.
 2. Click **Add playlist** and paste a link. Leave the name empty to use the playlist's own title. You can also choose a folder, shuffle and a relative volume for playlists that are louder than the others.
+   Or click the wand button (**Suggested playlists**) to start from a ready-made selection of YouTube and YouTube Music playlists and long mixes. There are 30, at least three for every built-in scenario. Each one you pick goes into a *Suggested playlists / <scenario>* folder and is bound to its scenario. These belong to other YouTube channels, so one may disappear or stop being playable outside YouTube; you can preview each one first.
 3. Bind playlists to scenarios. Drag a playlist onto a scenario card, or use the **+ Bind a playlist…** menu on the card. Drag a whole folder onto a card to bind every playlist inside it.
 4. Click ▶ on a scenario (in the panel, or the scenario buttons in the Playlists tab bar) to play it for everyone. The panel also has pause, next track, "another playlist from this scenario" and stop.
 
