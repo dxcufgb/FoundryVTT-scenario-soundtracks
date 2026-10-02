@@ -1,12 +1,13 @@
 {
   "id": "dxcufgbs-scenario-soundtrack",
-  "title": "Scenario Soundtracks",
-  "description": "Play Spotify, YouTube and YouTube Music playlists for scenarios like exploration and combat. The GM binds playlists to scenarios and custom themes in a control panel; the music follows each player's own music volume slider.",
+  "title": "Dxcufgb's Scenario Soundtracks",
+  "description": "<p>Play Spotify, YouTube and YouTube Music playlists for scenarios like exploration and combat. The GM binds playlists to scenarios and custom themes in a control panel; the music follows each player's own music volume slider.</p>",
   "version": "1.0.0",
   "authors": [
     {
       "name": "Dxcufgb",
-      "url": "https://github.com/Dxcufgb"
+      "url": "https://github.com/Dxcufgb",
+      "flags": {}
     }
   ],
   "compatibility": {
@@ -23,13 +24,17 @@
     "scripts/main.js"
   ],
   "styles": [
-    "styles/soundtracks.css"
+    {
+      "src": "styles/soundtracks.css"
+    }
   ],
   "languages": [
     {
       "lang": "en",
       "name": "English",
-      "path": "lang/en.json"
+      "path": "lang/en.json",
+      "flags": {}
     }
-  ]
+  ],
+  "flags": {}
 }
