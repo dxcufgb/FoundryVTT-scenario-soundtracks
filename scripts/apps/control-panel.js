@@ -11,7 +11,7 @@ import { SpotifyAuth } from "../backends/spotify.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 
-const DRAG_TYPE = "scenario-soundtracks";
+const DRAG_TYPE = "dxcufgbs-scenario-soundtrack";
 
 /* -------------------------------------------- */
 /*  Dialog helpers                               */
@@ -112,8 +112,8 @@ async function scenarioDialog(scenario = {}) {
 
 export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
-    id: "scenario-soundtracks-panel",
-    classes: ["scenario-soundtracks"],
+    id: "dxcufgbs-scenario-soundtrack-panel",
+    classes: ["dxcufgbs-scenario-soundtrack"],
     tag: "div",
     window: { title: "SST.Panel.Title", icon: "fa-solid fa-compact-disc", resizable: true },
     position: { width: 980, height: 720 },

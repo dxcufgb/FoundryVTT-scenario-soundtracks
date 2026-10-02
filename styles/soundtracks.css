@@ -1,5 +1,5 @@
 /* ---------- Hidden players ---------- */
-#scenario-soundtracks-host {
+#dxcufgbs-scenario-soundtrack-host {
   position: fixed;
   left: 0;
   bottom: 0;
@@ -93,7 +93,7 @@
 }
 
 /* ---------- Control panel ---------- */
-.scenario-soundtracks .window-content {
+.dxcufgbs-scenario-soundtrack .window-content {
   padding: 0.5rem;
 }
 .sst-panel {

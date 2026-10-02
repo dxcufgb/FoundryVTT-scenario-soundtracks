@@ -14,10 +14,10 @@ https://github.com/dxcufgb/FoundryVTT-scenario-soundtracks/releases/latest/downl
 
 ### Installing from a clone (development)
 
-The folder in `Data/modules` must be named after the module id, `scenario-soundtracks`. Otherwise Foundry reports *Invalid module "scenario-soundtracks" detected*. Clone it under that name:
+The folder in `Data/modules` must be named after the module id, `dxcufgbs-scenario-soundtrack`. Otherwise Foundry reports *Invalid module "dxcufgbs-scenario-soundtrack" detected*. Clone it under that name:
 
 ```
-git clone https://github.com/dxcufgb/FoundryVTT-scenario-soundtracks.git scenario-soundtracks
+git clone https://github.com/dxcufgb/FoundryVTT-scenario-soundtracks.git dxcufgbs-scenario-soundtrack
 ```
 
 ## How it works
@@ -43,7 +43,7 @@ Drag playlists and folders onto folders to reorganise them. The search box filte
 ### Macros
 
 ```js
-const sst = game.modules.get("scenario-soundtracks").api;
+const sst = game.modules.get("dxcufgbs-scenario-soundtrack").api;
 sst.playScenario("Combat");          // by id or name, e.g. a custom theme "Feywild"
 sst.playScenario("tavern", { listId: "…" });
 sst.playList("Spooky ambience");     // one playlist, by id or name
@@ -70,7 +70,7 @@ Spotify only streams music into other apps through its **Web Playback SDK**. Tha
 One-time setup by the GM:
 
 1. Go to <https://developer.spotify.com/dashboard> and create an app. Tick **Web API** and **Web Playback SDK**.
-2. In the control panel's **Spotify** section, copy the **Redirect URI**. It looks like `https://your-foundry/modules/scenario-soundtracks/auth/spotify-callback.html`. Add it under **Redirect URIs** in the Spotify app settings.
+2. In the control panel's **Spotify** section, copy the **Redirect URI**. It looks like `https://your-foundry/modules/dxcufgbs-scenario-soundtrack/auth/spotify-callback.html`. Add it under **Redirect URIs** in the Spotify app settings.
 3. New Spotify apps start in *development mode*, where only listed accounts may log in. Under **User Management**, add the Spotify e-mail of every player (and yourself).
 4. Copy the app's **Client ID** into the control panel (or **Configure Settings → Scenario Soundtracks**). No client secret is needed.
 

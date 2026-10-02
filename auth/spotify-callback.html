@@ -13,13 +13,13 @@
     // in the Foundry window) when the browser cut the opener link.
     const params = new URLSearchParams(window.location.search);
     const data = {
-      type: "scenario-soundtracks-spotify-auth",
+      type: "dxcufgbs-scenario-soundtrack-spotify-auth",
       code: params.get("code"),
       state: params.get("state"),
       error: params.get("error")
     };
     try { window.opener?.postMessage(data, window.location.origin); } catch (err) { /* opener gone */ }
-    try { localStorage.setItem("scenario-soundtracks.spotify-callback", JSON.stringify({ ...data, time: Date.now() })); } catch (err) { /* storage blocked */ }
+    try { localStorage.setItem("dxcufgbs-scenario-soundtrack.spotify-callback", JSON.stringify({ ...data, time: Date.now() })); } catch (err) { /* storage blocked */ }
     document.getElementById("message").textContent = data.error
       ? `Spotify login failed: ${data.error}. You can close this window.`
       : "Connected. You can close this window.";

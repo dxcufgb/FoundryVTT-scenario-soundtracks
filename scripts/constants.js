@@ -1,4 +1,4 @@
-export const MODULE_ID = "scenario-soundtracks";
+export const MODULE_ID = "dxcufgbs-scenario-soundtrack";
 
 export const SETTINGS = {
   library: "library",

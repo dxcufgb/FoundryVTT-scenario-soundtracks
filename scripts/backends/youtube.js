@@ -32,10 +32,10 @@ function loadApi() {
 
 /** The invisible element the players live in. It stays on screen (but transparent) so browsers keep it playing. */
 export function getPlayerHost() {
-  let host = document.getElementById("scenario-soundtracks-host");
+  let host = document.getElementById("dxcufgbs-scenario-soundtrack-host");
   if (!host) {
     host = document.createElement("div");
-    host.id = "scenario-soundtracks-host";
+    host.id = "dxcufgbs-scenario-soundtrack-host";
     host.setAttribute("aria-hidden", "true");
     document.body.append(host);
   }
@@ -168,7 +168,7 @@ export class YouTubeBackend {
 
   #onError(event) {
     // 2: bad id, 5: HTML5 error, 100: removed/private, 101/150: owner doesn't allow embedding.
-    console.warn(`scenario-soundtracks | YouTube error ${event.data}`, this.#source);
+    console.warn(`dxcufgbs-scenario-soundtrack | YouTube error ${event.data}`, this.#source);
     if (!this.#source) return;
     this.#errors++;
     if (this.#source.kind === "playlist" && this.#errors < MAX_ERRORS_IN_A_ROW) {

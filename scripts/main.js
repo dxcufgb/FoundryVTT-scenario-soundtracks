@@ -1,5 +1,5 @@
 /**
- * Scenario Soundtracks (scenario-soundtracks) - Foundry VTT V13
+ * Scenario Soundtracks (dxcufgbs-scenario-soundtrack) - Foundry VTT V13
  * Spotify, YouTube and YouTube Music playlists for scenarios such as exploration and combat.
  */
 
@@ -74,7 +74,7 @@ Hooks.once("init", () => {
 Hooks.once("ready", () => {
   engine = new SoundtrackEngine();
 
-  // Macro / module API, e.g. game.modules.get("scenario-soundtracks").api.playScenario("Combat")
+  // Macro / module API, e.g. game.modules.get("dxcufgbs-scenario-soundtrack").api.playScenario("Combat")
   game.modules.get(MODULE_ID).api = {
     playScenario: playback.playScenario,
     playList: playback.playList,

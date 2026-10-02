@@ -13,8 +13,8 @@ const AUTH_URL = "https://accounts.spotify.com/authorize";
 const TOKEN_URL = "https://accounts.spotify.com/api/token";
 const API_URL = "https://api.spotify.com/v1";
 const SCOPES = "streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state";
-const CALLBACK_TYPE = "scenario-soundtracks-spotify-auth";
-const CALLBACK_STORAGE_KEY = "scenario-soundtracks.spotify-callback";
+const CALLBACK_TYPE = "dxcufgbs-scenario-soundtrack-spotify-auth";
+const CALLBACK_STORAGE_KEY = "dxcufgbs-scenario-soundtrack.spotify-callback";
 const LOGIN_TIMEOUT = 5 * 60 * 1000;
 
 /* -------------------------------------------- */
@@ -88,7 +88,7 @@ export class SpotifyAuth {
     });
 
     try { localStorage.removeItem(CALLBACK_STORAGE_KEY); } catch (err) { /* storage blocked */ }
-    const popup = window.open(url.href, "scenario-soundtracks-spotify", "width=500,height=760");
+    const popup = window.open(url.href, "dxcufgbs-scenario-soundtrack-spotify", "width=500,height=760");
     if (!popup) throw new Error(localize("Spotify.PopupBlocked"));
 
     const result = await new Promise((resolve, reject) => {
@@ -264,7 +264,7 @@ export class SpotifyBackend {
         name: `Foundry VTT – ${game.user.name}`,
         volume: this.#volume,
         getOAuthToken: callback => {
-          this.auth.getAccessToken().then(callback).catch(err => console.error("scenario-soundtracks | Spotify token", err));
+          this.auth.getAccessToken().then(callback).catch(err => console.error("dxcufgbs-scenario-soundtrack | Spotify token", err));
         }
       });
       const ready = new Promise((resolve, reject) => {
@@ -285,7 +285,7 @@ export class SpotifyBackend {
           this.warnOnce("account", localize("Spotify.PremiumRequired"));
           reject(new Error(message));
         });
-        player.addListener("playback_error", ({ message }) => console.warn("scenario-soundtracks | Spotify playback error", message));
+        player.addListener("playback_error", ({ message }) => console.warn("dxcufgbs-scenario-soundtrack | Spotify playback error", message));
       });
       if (!(await player.connect())) throw new Error("Spotify player could not connect.");
       this.player = player;
@@ -309,7 +309,7 @@ export class SpotifyBackend {
         return data?.tracks?.total ?? data?.items?.total ?? null;
       }
     } catch (err) {
-      console.debug("scenario-soundtracks | could not read Spotify list size", err);
+      console.debug("dxcufgbs-scenario-soundtrack | could not read Spotify list size", err);
     }
     return null;
   }
