@@ -211,7 +211,7 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
     classes: ["dxcufgbs-scenario-soundtrack"],
     tag: "div",
     window: { title: "SST.Panel.Title", icon: "fa-solid fa-compact-disc", resizable: true },
-    position: { width: 980, height: 720 },
+    position: { width: 1240, height: 860 },
     actions: {
       createFolder: ControlPanel._onCreateFolder,
       editFolder: ControlPanel._onEditFolder,

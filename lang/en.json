@@ -123,7 +123,8 @@
       "RedirectUri": "Redirect URI",
       "Copy": "Copy",
       "RedirectCopied": "Redirect URI copied.",
-      "SetupHint": "Create an app at developer.spotify.com/dashboard (Web API + Web Playback SDK), add the Redirect URI above to it, add every player's Spotify e-mail under \"User Management\", and paste the app's Client ID here. Each listener needs Spotify Premium and connects with the Spotify button in the Playlists tab."
+      "SetupHint": "Create an app at developer.spotify.com/dashboard (Web API + Web Playback SDK), add the Redirect URI above to it, add every player's Spotify e-mail under \"User Management\", and paste the app's Client ID here. Each listener needs Spotify Premium and connects with the Spotify button in the Playlists tab.",
+      "SetupTitle": "How to set up Spotify"
     },
     "Notify": {
       "GMOnly": "Only the GM can control the soundtrack.",
@@ -181,7 +182,7 @@
     },
     "Transfer": {
       "Title": "Import / export",
-      "Hint": "Save your whole setup (folders, playlists, scenarios, themes and their playlists, combat automation and scene soundtracks) to a file, and load it in another world.",
+      "Hint": "Save your whole setup to a file, or load one made in another world.",
       "Export": "Export",
       "Import": "Import",
       "Exported": "Exported {lists} playlist(s) to a file.",
@@ -199,7 +200,8 @@
       "ReplaceHint": "Your current folders, playlists, themes and bindings are deleted and replaced by the file's.",
       "ReplaceConfirm": "This deletes your current folders, playlists, themes and bindings in this world. Continue?",
       "Scenes": "Bind scene soundtracks to scenes with the same name ({matches} of {total} found in this world)",
-      "Imported": "Imported: {lists} new playlist(s), {folders} folder(s), {scenarios} theme(s), {bindings} binding(s), {scenes} scene(s)."
+      "Imported": "Imported: {lists} new playlist(s), {folders} folder(s), {scenarios} theme(s), {bindings} binding(s), {scenes} scene(s).",
+      "ExportTooltip": "Folders, playlists, scenarios and themes with their playlists, combat automation and scene soundtracks"
     }
   }
 }

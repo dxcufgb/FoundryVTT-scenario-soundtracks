@@ -66,6 +66,15 @@
           <button type="button" class="sst-suggest-button" data-action="addSuggestions"><i class="fa-solid fa-wand-magic-sparkles"></i> {{localize "SST.Suggestions.Title"}}</button></li>{{/if}}
       </ol>
       <p class="hint">{{localize "SST.Library.DragHint"}}</p>
+
+      <fieldset class="sst-transfer">
+        <legend><i class="fa-solid fa-right-left"></i> {{localize "SST.Transfer.Title"}}</legend>
+        <p class="hint">{{localize "SST.Transfer.Hint"}}</p>
+        <div class="sst-transfer-buttons">
+          <button type="button" data-action="exportSetup" data-tooltip="{{localize "SST.Transfer.ExportTooltip"}}"><i class="fa-solid fa-file-export"></i> {{localize "SST.Transfer.Export"}}</button>
+          <button type="button" data-action="importSetup"><i class="fa-solid fa-file-import"></i> {{localize "SST.Transfer.Import"}}</button>
+        </div>
+      </fieldset>
     </section>
 
     <section class="sst-scenarios">
@@ -128,15 +137,6 @@
         </fieldset>
 
         <fieldset>
-          <legend><i class="fa-solid fa-right-left"></i> {{localize "SST.Transfer.Title"}}</legend>
-          <p class="hint">{{localize "SST.Transfer.Hint"}}</p>
-          <div class="sst-transfer-buttons">
-            <button type="button" data-action="exportSetup"><i class="fa-solid fa-file-export"></i> {{localize "SST.Transfer.Export"}}</button>
-            <button type="button" data-action="importSetup"><i class="fa-solid fa-file-import"></i> {{localize "SST.Transfer.Import"}}</button>
-          </div>
-        </fieldset>
-
-        <fieldset>
           <legend><i class="fa-brands fa-spotify"></i> Spotify</legend>
           {{#unless spotify.secure}}<p class="sst-warning"><i class="fa-solid fa-triangle-exclamation"></i> {{localize "SST.Spotify.NeedsHttps"}}</p>{{/unless}}
           <div class="form-group">
@@ -153,7 +153,10 @@
               <button type="button" data-action="copyRedirect" data-tooltip="{{localize "SST.Spotify.Copy"}}"><i class="fa-solid fa-copy"></i></button>
             </div>
           </div>
-          <p class="hint">{{localize "SST.Spotify.SetupHint"}}</p>
+          <details class="sst-help">
+            <summary>{{localize "SST.Spotify.SetupTitle"}}</summary>
+            <p class="hint">{{localize "SST.Spotify.SetupHint"}}</p>
+          </details>
         </fieldset>
       </div>
     </section>
