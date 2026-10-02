@@ -94,7 +94,12 @@ function defaultScenario(def) {
 
 /** A normalized copy of the library; safe to modify and pass to saveLibrary(). */
 export function getLibrary() {
-  const stored = foundry.utils.deepClone(game.settings.get(MODULE_ID, SETTINGS.library) ?? {});
+  return normalizeLibrary(game.settings.get(MODULE_ID, SETTINGS.library));
+}
+
+/** Fill in defaults and drop broken references, e.g. for stored or imported data. */
+export function normalizeLibrary(raw) {
+  const stored = foundry.utils.deepClone(raw ?? {});
   const lib = {
     folders: Array.isArray(stored.folders) ? stored.folders : [],
     lists: Array.isArray(stored.lists) ? stored.lists : [],

@@ -178,6 +178,28 @@
       "ListCount": "{count} playlist(s)",
       "NoLists": "no playlists yet",
       "ContextMenu": "Scenario soundtrack…"
+    },
+    "Transfer": {
+      "Title": "Import / export",
+      "Hint": "Save your whole setup (folders, playlists, scenarios, themes and their playlists, combat automation and scene soundtracks) to a file, and load it in another world.",
+      "Export": "Export",
+      "Import": "Import",
+      "Exported": "Exported {lists} playlist(s) to a file.",
+      "ImportTitle": "Import soundtrack setup",
+      "PickFile": "Choose a file exported from Scenario Soundtracks.",
+      "Next": "Next",
+      "NotJson": "That file isn't valid JSON.",
+      "WrongFile": "That file isn't a Scenario Soundtracks export.",
+      "NewerVersion": "That file was exported by a newer version of this module. Update the module first.",
+      "Source": "Exported from \"{world}\" on {date}.",
+      "Summary": "It contains {lists} playlist(s) in {folders} folder(s), {themes} custom theme(s) and {bindings} playlist binding(s).",
+      "Merge": "Add to my current setup",
+      "MergeHint": "Nothing is removed. Playlists you already have (same link), folders with the same name and themes with the same name are reused instead of duplicated.",
+      "Replace": "Replace my current setup",
+      "ReplaceHint": "Your current folders, playlists, themes and bindings are deleted and replaced by the file's.",
+      "ReplaceConfirm": "This deletes your current folders, playlists, themes and bindings in this world. Continue?",
+      "Scenes": "Bind scene soundtracks to scenes with the same name ({matches} of {total} found in this world)",
+      "Imported": "Imported: {lists} new playlist(s), {folders} folder(s), {scenarios} theme(s), {bindings} binding(s), {scenes} scene(s)."
     }
   }
 }

@@ -414,3 +414,19 @@
 .sst-scene-dialog .hint {
   margin-top: 0.25rem;
 }
+
+/* Import / export */
+.sst-transfer-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+.sst-transfer-buttons button {
+  flex: 1;
+}
+.sst-import-dialog .form-group.stacked {
+  flex-direction: column;
+  align-items: stretch;
+}
+.sst-import-dialog .hint {
+  margin: 0 0 0.4rem 1.6rem;
+}

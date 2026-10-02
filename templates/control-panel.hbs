@@ -128,6 +128,15 @@
         </fieldset>
 
         <fieldset>
+          <legend><i class="fa-solid fa-right-left"></i> {{localize "SST.Transfer.Title"}}</legend>
+          <p class="hint">{{localize "SST.Transfer.Hint"}}</p>
+          <div class="sst-transfer-buttons">
+            <button type="button" data-action="exportSetup"><i class="fa-solid fa-file-export"></i> {{localize "SST.Transfer.Export"}}</button>
+            <button type="button" data-action="importSetup"><i class="fa-solid fa-file-import"></i> {{localize "SST.Transfer.Import"}}</button>
+          </div>
+        </fieldset>
+
+        <fieldset>
           <legend><i class="fa-brands fa-spotify"></i> Spotify</legend>
           {{#unless spotify.secure}}<p class="sst-warning"><i class="fa-solid fa-triangle-exclamation"></i> {{localize "SST.Spotify.NeedsHttps"}}</p>{{/unless}}
           <div class="form-group">

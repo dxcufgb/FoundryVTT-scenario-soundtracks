@@ -9,6 +9,7 @@ import * as library from "../library.js";
 import * as playback from "../state.js";
 import { SpotifyAuth } from "../backends/spotify.js";
 import { SUGGESTIONS } from "../suggestions.js";
+import * as transfer from "../transfer.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 
@@ -142,6 +143,64 @@ async function suggestionsDialog(lib) {
   });
 }
 
+/** Ask for an export file; resolves to its parsed content (or null). */
+async function pickImportFile() {
+  const file = await DialogV2.prompt({
+    window: { title: localize("Transfer.ImportTitle"), icon: "fa-solid fa-file-import" },
+    position: { width: 440 },
+    content: `<div class="sst-dialog">
+      <p>${escapeHTML(localize("Transfer.PickFile"))}</p>
+      <div class="form-group"><div class="form-fields"><input type="file" name="file" accept=".json,application/json"></div></div>
+    </div>`,
+    ok: { label: localize("Transfer.Next"), icon: "fa-solid fa-arrow-right", callback: (event, button) => button.form.elements.file.files?.[0] ?? null },
+    rejectClose: false
+  });
+  if (!file) return null;
+  return transfer.parseExport(await foundry.utils.readTextFromFile(file));
+}
+
+/** Show what an export contains and how to import it; resolves to { mode, scenes } (or null). */
+async function importOptionsDialog(parsed) {
+  const lib = parsed.library;
+  const themes = lib.scenarios.filter(s => !s.builtin).length;
+  const bindings = lib.scenarios.reduce((sum, s) => sum + s.lists.length, 0);
+  const matches = transfer.matchingScenes(parsed.scenes).length;
+  const date = parsed.exportedAt ? new Date(parsed.exportedAt).toLocaleString(game.i18n.lang) : "";
+  const summary = localize("Transfer.Summary", {
+    lists: lib.lists.length, folders: lib.folders.length, themes, bindings
+  });
+  const source = parsed.world || date
+    ? `<p class="hint">${escapeHTML(localize("Transfer.Source", { world: parsed.world || "?", date: date || "?" }))}</p>` : "";
+  const content = `<div class="sst-dialog sst-import-dialog">
+    ${source}
+    <p>${escapeHTML(summary)}</p>
+    <div class="form-group stacked">
+      <label class="checkbox"><input type="radio" name="mode" value="merge" checked> ${escapeHTML(localize("Transfer.Merge"))}</label>
+      <p class="hint">${escapeHTML(localize("Transfer.MergeHint"))}</p>
+      <label class="checkbox"><input type="radio" name="mode" value="replace"> ${escapeHTML(localize("Transfer.Replace"))}</label>
+      <p class="hint">${escapeHTML(localize("Transfer.ReplaceHint"))}</p>
+    </div>
+    ${parsed.scenes.length ? `<div class="form-group">
+      <label class="checkbox"><input type="checkbox" name="scenes"${matches ? " checked" : " disabled"}>
+        ${escapeHTML(localize("Transfer.Scenes", { matches, total: parsed.scenes.length }))}</label>
+    </div>` : ""}
+  </div>`;
+  return DialogV2.prompt({
+    window: { title: localize("Transfer.ImportTitle"), icon: "fa-solid fa-file-import" },
+    position: { width: 480 },
+    content,
+    ok: {
+      label: localize("Transfer.Import"),
+      icon: "fa-solid fa-file-import",
+      callback: (event, button) => ({
+        mode: button.form.querySelector("input[name=mode]:checked")?.value ?? "merge",
+        scenes: !!button.form.elements.scenes?.checked
+      })
+    },
+    rejectClose: false
+  });
+}
+
 /* -------------------------------------------- */
 /*  Panel                                        */
 /* -------------------------------------------- */
@@ -173,6 +232,8 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
       skipTrack: () => playback.skipTrack(),
       nextList: () => playback.nextList(),
       addSuggestions: ControlPanel._onAddSuggestions,
+      exportSetup: ControlPanel._onExportSetup,
+      importSetup: ControlPanel._onImportSetup,
       copyRedirect: ControlPanel._onCopyRedirect,
       saveClientId: ControlPanel._onSaveClientId
     }
@@ -497,6 +558,30 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!picked?.length) return;
     const { added, bound } = await library.addSuggestions(picked);
     ui.notifications.info(localize("Suggestions.Done", { added, bound }));
+  }
+
+  static async _onExportSetup() {
+    const data = transfer.exportToFile();
+    ui.notifications.info(localize("Transfer.Exported", { lists: data.library.lists.length }));
+  }
+
+  static async _onImportSetup() {
+    let parsed;
+    try {
+      parsed = await pickImportFile();
+    } catch (err) {
+      ui.notifications.error(err.message);
+      return;
+    }
+    if (!parsed) return;
+    const options = await importOptionsDialog(parsed);
+    if (!options) return;
+    if (options.mode === "replace") {
+      const ok = await confirm(localize("Transfer.Replace"), escapeHTML(localize("Transfer.ReplaceConfirm")));
+      if (!ok) return;
+    }
+    const result = await transfer.applyImport(parsed, options);
+    ui.notifications.info(localize("Transfer.Imported", result));
   }
 
   static async _onCopyRedirect() {
