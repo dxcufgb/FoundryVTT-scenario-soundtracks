@@ -1,0 +1,150 @@
+<div class="sst-panel">
+  <section class="sst-nowbar {{#if now}}playing{{/if}}">
+    {{#if now}}
+      <i class="sst-now-icon {{now.icon}}"></i>
+      <div class="sst-now-text">
+        <strong>{{now.title}}</strong>
+        <span>{{now.subtitle}}{{#if now.auto}} · {{localize "SST.Panel.Automatic"}}{{/if}}{{#if now.paused}} · {{localize "SST.Bar.Paused"}}{{/if}}</span>
+      </div>
+      <div class="sst-now-controls">
+        <button type="button" data-action="togglePause" data-tooltip="{{#if now.paused}}{{localize "SST.Panel.Resume"}}{{else}}{{localize "SST.Panel.Pause"}}{{/if}}">
+          <i class="fa-solid {{#if now.paused}}fa-play{{else}}fa-pause{{/if}}"></i></button>
+        <button type="button" data-action="skipTrack" data-tooltip="{{localize "SST.Panel.SkipTrack"}}"><i class="fa-solid fa-forward-step"></i></button>
+        <button type="button" data-action="nextList" data-tooltip="{{localize "SST.Panel.NextList"}}" {{#unless now.scenario}}disabled{{/unless}}><i class="fa-solid fa-shuffle"></i></button>
+        <button type="button" data-action="stop" data-tooltip="{{localize "SST.Panel.Stop"}}"><i class="fa-solid fa-stop"></i></button>
+      </div>
+    {{else}}
+      <i class="sst-now-icon fa-solid fa-volume-xmark"></i>
+      <div class="sst-now-text"><strong>{{localize "SST.Bar.Idle"}}</strong><span>{{localize "SST.Panel.IdleHint"}}</span></div>
+    {{/if}}
+  </section>
+
+  <div class="sst-columns">
+    <section class="sst-library">
+      <header class="sst-section-header">
+        <h3><i class="fa-solid fa-list-music"></i> {{localize "SST.Library.Title"}}</h3>
+        <div class="sst-header-buttons">
+          <button type="button" data-action="createList"><i class="fa-solid fa-plus"></i> {{localize "SST.Library.AddList"}}</button>
+          <button type="button" data-action="createFolder" data-tooltip="{{localize "SST.Library.AddFolder"}}"><i class="fa-solid fa-folder-plus"></i></button>
+        </div>
+      </header>
+      <input type="search" class="sst-filter" value="{{filter}}" placeholder="{{localize "SST.Library.Search"}}">
+
+      <ol class="sst-tree" data-drop-folder="">
+        {{#each tree}}
+          {{#if isFolder}}
+          <li class="sst-row sst-folder-row" draggable="true" data-drag="folder" data-id="{{id}}" data-ancestors="{{ancestors}}" data-drop-folder="{{id}}" style="--depth: {{depth}}">
+            <a class="sst-row-main" data-action="toggleFolder">
+              <i class="fa-solid {{#if expanded}}fa-folder-open{{else}}fa-folder{{/if}}"></i>
+              <span class="sst-name">{{name}}</span>
+              <span class="sst-count">{{count}}</span>
+            </a>
+            <span class="sst-row-controls">
+              <a data-action="createList" data-tooltip="{{localize "SST.Library.AddListHere"}}"><i class="fa-solid fa-plus"></i></a>
+              <a data-action="createFolder" data-tooltip="{{localize "SST.Library.AddFolderHere"}}"><i class="fa-solid fa-folder-plus"></i></a>
+              <a data-action="editFolder" data-tooltip="{{localize "SST.Library.Edit"}}"><i class="fa-solid fa-pen"></i></a>
+              <a data-action="deleteFolder" data-tooltip="{{localize "SST.Library.Delete"}}"><i class="fa-solid fa-trash"></i></a>
+            </span>
+          </li>
+          {{else}}
+          <li class="sst-row sst-list-row {{#if playing}}playing{{/if}} {{#if invalid}}invalid{{/if}}" draggable="true" data-drag="list" data-id="{{id}}" data-ancestors="{{ancestors}}" data-url="{{url}}" data-drop-folder="{{folder}}" style="--depth: {{depth}}">
+            <span class="sst-row-main" data-tooltip="{{sourceLabel}}">
+              <i class="{{icon}}"></i>
+              <span class="sst-name">{{name}}</span>
+              {{#if bound}}<span class="sst-count" data-tooltip="{{localize "SST.Library.BoundCount"}}"><i class="fa-solid fa-link"></i> {{bound}}</span>{{/if}}
+            </span>
+            <span class="sst-row-controls">
+              <a data-action="playList" data-tooltip="{{localize "SST.Library.PlayNow"}}"><i class="fa-solid fa-play"></i></a>
+              <a data-action="editList" data-tooltip="{{localize "SST.Library.Edit"}}"><i class="fa-solid fa-pen"></i></a>
+              <a data-action="deleteList" data-tooltip="{{localize "SST.Library.Delete"}}"><i class="fa-solid fa-trash"></i></a>
+            </span>
+          </li>
+          {{/if}}
+        {{/each}}
+        {{#if empty}}<li class="sst-empty">{{localize "SST.Library.Empty"}}</li>{{/if}}
+      </ol>
+      <p class="hint">{{localize "SST.Library.DragHint"}}</p>
+    </section>
+
+    <section class="sst-scenarios">
+      <header class="sst-section-header">
+        <h3><i class="fa-solid fa-masks-theater"></i> {{localize "SST.Scenario.Title"}}</h3>
+        <div class="sst-header-buttons">
+          <button type="button" data-action="createScenario"><i class="fa-solid fa-plus"></i> {{localize "SST.Scenario.AddTheme"}}</button>
+        </div>
+      </header>
+
+      <div class="sst-scenario-grid">
+        {{#each scenarios}}
+        <article class="sst-scenario {{#if active}}active{{/if}}" data-scenario-id="{{id}}" data-drop-scenario="{{id}}">
+          <header>
+            <i class="sst-scenario-icon {{icon}}"></i>
+            <h4>{{name}}</h4>
+            {{#if custom}}<span class="sst-tag">{{localize "SST.Scenario.Theme"}}</span>{{/if}}
+            <span class="sst-scenario-controls">
+              <a data-action="playScenario" data-tooltip="{{localize "SST.Scenario.Play"}}"><i class="fa-solid fa-play"></i></a>
+              <a data-action="editScenario" data-tooltip="{{localize "SST.Library.Edit"}}"><i class="fa-solid fa-pen"></i></a>
+              {{#if custom}}<a data-action="deleteScenario" data-tooltip="{{localize "SST.Library.Delete"}}"><i class="fa-solid fa-trash"></i></a>{{/if}}
+            </span>
+          </header>
+          <ul class="sst-bindings">
+            {{#each lists}}
+            <li class="{{#if playing}}playing{{/if}}" data-list-id="{{id}}">
+              <i class="{{icon}}"></i>
+              <span class="sst-name">{{name}}</span>
+              <a data-action="playBound" data-tooltip="{{localize "SST.Scenario.PlayThis"}}"><i class="fa-solid fa-play"></i></a>
+              <a data-action="unbindList" data-tooltip="{{localize "SST.Scenario.Unbind"}}"><i class="fa-solid fa-xmark"></i></a>
+            </li>
+            {{else}}
+            <li class="sst-empty">{{localize "SST.Scenario.DropHere"}}</li>
+            {{/each}}
+          </ul>
+          <footer>
+            <select data-bind-scenario="{{id}}">
+              <option value="">{{localize "SST.Scenario.AddList"}}</option>
+              {{#each options}}<option value="{{id}}">{{label}}</option>{{/each}}
+            </select>
+            <span class="sst-mode" data-tooltip="{{localize "SST.Dialog.ModeHint"}}">{{modeLabel}}</span>
+          </footer>
+        </article>
+        {{/each}}
+      </div>
+
+      <div class="sst-settings">
+        <fieldset>
+          <legend><i class="fa-solid fa-swords"></i> {{localize "SST.Automation.Title"}}</legend>
+          <div class="form-group">
+            <label>{{localize "SST.Automation.Combat"}}</label>
+            <select name="automationCombat">
+              {{#each automation.combatOptions}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>{{localize "SST.Automation.Restore"}}</label>
+            <input type="checkbox" name="automationRestore" {{#if automation.restore}}checked{{/if}}>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend><i class="fa-brands fa-spotify"></i> Spotify</legend>
+          {{#unless spotify.secure}}<p class="sst-warning"><i class="fa-solid fa-triangle-exclamation"></i> {{localize "SST.Spotify.NeedsHttps"}}</p>{{/unless}}
+          <div class="form-group">
+            <label>{{localize "SST.Spotify.ClientId"}}</label>
+            <div class="form-fields">
+              <input type="text" name="spotifyClientId" value="{{spotify.clientId}}" placeholder="{{localize "SST.Spotify.ClientIdPlaceholder"}}">
+              <button type="button" data-action="saveClientId" data-tooltip="{{localize "SST.Dialog.Save"}}"><i class="fa-solid fa-floppy-disk"></i></button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>{{localize "SST.Spotify.RedirectUri"}}</label>
+            <div class="form-fields">
+              <input type="text" value="{{spotify.redirectUri}}" readonly>
+              <button type="button" data-action="copyRedirect" data-tooltip="{{localize "SST.Spotify.Copy"}}"><i class="fa-solid fa-copy"></i></button>
+            </div>
+          </div>
+          <p class="hint">{{localize "SST.Spotify.SetupHint"}}</p>
+        </fieldset>
+      </div>
+    </section>
+  </div>
+</div>

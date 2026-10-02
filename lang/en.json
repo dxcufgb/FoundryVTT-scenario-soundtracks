@@ -1,0 +1,158 @@
+{
+  "SST": {
+    "Module": {
+      "Title": "Scenario Soundtracks"
+    },
+    "Source": {
+      "Invalid": "Link not recognised"
+    },
+    "Kind": {
+      "playlist": "playlist",
+      "album": "album",
+      "artist": "artist",
+      "track": "track",
+      "video": "video"
+    },
+    "Library": {
+      "Title": "Playlists",
+      "Root": "(No folder)",
+      "NewFolder": "New folder",
+      "NewList": "New playlist",
+      "AddList": "Add playlist",
+      "AddFolder": "Add folder",
+      "AddListHere": "Add playlist to this folder",
+      "AddFolderHere": "Add sub-folder",
+      "Search": "Search playlists…",
+      "Edit": "Edit",
+      "Delete": "Delete",
+      "BoundCount": "Number of scenarios this playlist is bound to",
+      "PlayNow": "Play now for everyone",
+      "Empty": "No playlists yet. Click \"Add playlist\" and paste a Spotify, YouTube or YouTube Music link.",
+      "DragHint": "Drag a playlist onto a scenario to bind it, or onto a folder to move it. Drag a folder onto a scenario to bind every playlist inside it."
+    },
+    "Scenario": {
+      "Title": "Scenarios & themes",
+      "AddTheme": "New theme",
+      "NewTheme": "New theme",
+      "Theme": "Theme",
+      "Play": "Play this scenario for everyone",
+      "PlayThis": "Play this playlist",
+      "Unbind": "Remove from this scenario",
+      "DropHere": "Drop playlists here",
+      "AddList": "+ Bind a playlist…",
+      "ModeRandom": "Random playlist",
+      "ModeSequence": "Playlists in order",
+      "exploration": "Exploration",
+      "combat": "Combat",
+      "boss": "Boss fight",
+      "town": "Town",
+      "tavern": "Tavern",
+      "dungeon": "Dungeon",
+      "tension": "Tension",
+      "rest": "Rest",
+      "victory": "Victory"
+    },
+    "Panel": {
+      "Title": "Scenario Soundtracks",
+      "Pause": "Pause",
+      "Resume": "Resume",
+      "SkipTrack": "Next track",
+      "NextList": "Another playlist from this scenario",
+      "Stop": "Stop",
+      "SingleList": "Single playlist",
+      "Automatic": "started automatically",
+      "IdleHint": "Click ▶ on a scenario or playlist to start the music for everyone."
+    },
+    "Bar": {
+      "Idle": "No soundtrack playing",
+      "Playing": "Soundtrack playing",
+      "Paused": "Paused"
+    },
+    "Dialog": {
+      "Save": "Save",
+      "Link": "Link",
+      "LinkHint": "A Spotify playlist, album, artist or track link, a YouTube or YouTube Music playlist link, or a single YouTube video (which loops).",
+      "Name": "Name",
+      "NameAuto": "Leave empty to use the playlist's own title",
+      "Folder": "Folder",
+      "ParentFolder": "Inside folder",
+      "Shuffle": "Shuffle",
+      "ShuffleHint": "Start at a random track and play in random order.",
+      "Volume": "Relative volume",
+      "VolumeHint": "Turn down playlists that are louder than the others. Everyone's Music slider still applies on top.",
+      "CreateList": "Add playlist",
+      "EditList": "Edit playlist",
+      "CreateFolder": "Add folder",
+      "EditFolder": "Edit folder",
+      "Icon": "Icon",
+      "IconHint": "A <a href=\"https://fontawesome.com/search?o=r&m=free\" target=\"_blank\">Font Awesome</a> class, e.g. <code>fa-solid fa-ghost</code>.",
+      "Mode": "Which playlist",
+      "ModeHint": "With several playlists bound: pick a random one each time (never the same twice in a row), or go through them in order.",
+      "CreateScenario": "New theme",
+      "EditScenario": "Edit scenario",
+      "DeleteFolder": "Delete folder",
+      "DeleteFolderText": "Delete the folder <strong>{name}</strong>? Its playlists and sub-folders move to the folder above.",
+      "DeleteList": "Delete playlist",
+      "DeleteListText": "Delete <strong>{name}</strong>? It is also removed from every scenario it is bound to.",
+      "DeleteScenario": "Delete theme",
+      "DeleteScenarioText": "Delete the theme <strong>{name}</strong>? The playlists themselves are kept."
+    },
+    "Automation": {
+      "Title": "Automation",
+      "Combat": "When combat starts, play",
+      "Restore": "Go back to the previous music when combat ends",
+      "None": "Nothing (leave the music alone)"
+    },
+    "Spotify": {
+      "Connect": "Connect your Spotify account to hear Spotify playlists",
+      "Disconnect": "Spotify connected – click to disconnect",
+      "Connected": "Spotify connected.",
+      "ConnectToHear": "This soundtrack is on Spotify. Click the Spotify button in the Playlists tab to connect your Spotify Premium account and hear it.",
+      "NoClientId": "The GM hasn't set a Spotify Client ID yet.",
+      "NeedsHttps": "Spotify only works when Foundry is opened over https:// (or on the host machine at http://127.0.0.1).",
+      "PopupBlocked": "The browser blocked the Spotify login window. Allow pop-ups for this site and try again.",
+      "LoginTimeout": "The Spotify login was not finished in time.",
+      "LoginFailed": "Spotify login failed: {error}",
+      "NotConnected": "Spotify is not connected.",
+      "InitError": "Spotify can't play in this browser ({message}). The Foundry desktop app can't play Spotify – open Foundry in Chrome, Edge or Firefox instead.",
+      "AuthError": "Spotify rejected the login ({message}). Disconnect and connect Spotify again.",
+      "PremiumRequired": "Spotify only lets Premium accounts play music in other apps. Spotify soundtracks will stay silent for you.",
+      "ClientId": "Client ID",
+      "ClientIdPlaceholder": "From developer.spotify.com/dashboard",
+      "ClientIdSaved": "Spotify Client ID saved.",
+      "RedirectUri": "Redirect URI",
+      "Copy": "Copy",
+      "RedirectCopied": "Redirect URI copied.",
+      "SetupHint": "Create an app at developer.spotify.com/dashboard (Web API + Web Playback SDK), add the Redirect URI above to it, add every player's Spotify e-mail under \"User Management\", and paste the app's Client ID here. Each listener needs Spotify Premium and connects with the Spotify button in the Playlists tab."
+    },
+    "Notify": {
+      "GMOnly": "Only the GM can control the soundtrack.",
+      "NoScenario": "There is no scenario called \"{name}\".",
+      "NoList": "There is no playlist called \"{name}\".",
+      "NoListsBound": "No playlists are bound to \"{name}\" yet. Open the Scenario Soundtracks panel and drag a playlist onto it.",
+      "PlaybackFailed": "Scenario Soundtracks: playback failed ({error}).",
+      "YouTubeError": "YouTube refused to play this (error {code}). The video may be private, removed, or its owner doesn't allow it to be played outside YouTube.",
+      "InvalidLink": "That link isn't a Spotify, YouTube or YouTube Music playlist, album, track or video.",
+      "BoundFolder": "Bound {count} playlist(s).",
+      "FolderIntoItself": "A folder can't be moved into itself.",
+      "SpotifyNotSetUp": "Spotify isn't set up yet, so this playlist won't play. Add your Spotify Client ID in the Spotify section of this panel."
+    },
+    "Settings": {
+      "SpotifyClientId": {
+        "Name": "Spotify Client ID",
+        "Hint": "Needed for Spotify playlists. Setup instructions and the Redirect URI to use are in the Scenario Soundtracks control panel (button in the Playlists tab)."
+      },
+      "ShowToPlayers": {
+        "Name": "Show players what is playing",
+        "Hint": "Show the scenario and playlist name in the players' Playlists tab. Turn off to keep e.g. a \"Boss fight\" soundtrack a surprise."
+      },
+      "Enabled": {
+        "Name": "Play soundtracks on this computer",
+        "Hint": "Turn off to mute Scenario Soundtracks for you only. To make them quieter, use the Music volume slider in the Playlists tab."
+      }
+    },
+    "Keybindings": {
+      "OpenPanel": "Open the Scenario Soundtracks control panel"
+    }
+  }
+}
