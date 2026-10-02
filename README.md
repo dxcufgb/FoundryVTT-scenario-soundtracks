@@ -1,4 +1,4 @@
-# Scenario Soundtracks
+# Dxcufgb's Scenario Soundtracks
 
 Play **Spotify**, **YouTube** and **YouTube Music** playlists for the scenes at your table, like exploration, combat, a tavern or a boss fight. The GM sets them up in a control panel, and the music plays for everyone at their own **Music** volume.
 
@@ -10,14 +10,6 @@ In Foundry, go to **Add-on Modules → Install Module**, paste this link into **
 
 ```
 https://github.com/dxcufgb/FoundryVTT-scenario-soundtracks/releases/latest/download/module.json
-```
-
-### Installing from a clone (development)
-
-The folder in `Data/modules` must be named after the module id, `dxcufgbs-scenario-soundtrack`. Otherwise Foundry reports *Invalid module "dxcufgbs-scenario-soundtrack" detected*. Clone it under that name:
-
-```
-git clone https://github.com/dxcufgb/FoundryVTT-scenario-soundtracks.git dxcufgbs-scenario-soundtrack
 ```
 
 ## How it works
@@ -36,7 +28,8 @@ git clone https://github.com/dxcufgb/FoundryVTT-scenario-soundtracks.git dxcufgb
 
 1. Open the **Playlists** tab. A Scenario Soundtracks bar is now at the top. Click the sliders button to open the control panel. You can also give the panel a keybinding under **Configure Controls**.
 2. Click **Add playlist** and paste a link. Leave the name empty to use the playlist's own title. You can also choose a folder, shuffle and a relative volume for playlists that are louder than the others.
-   Or click the wand button (**Suggested playlists**) to start from a ready-made selection of YouTube and YouTube Music playlists and long mixes. There are 30, at least three for every built-in scenario. Each one you pick goes into a *Suggested playlists / <scenario>* folder and is bound to its scenario. These belong to other YouTube channels, so one may disappear or stop being playable outside YouTube; you can preview each one first.
+
+   Or click the wand button (**Suggested playlists**) to start from 30 ready-made YouTube and YouTube Music playlists and long mixes, at least three for every built-in scenario. Each one you pick goes into a *Suggested playlists / <scenario>* folder and is bound to its scenario. They belong to other YouTube channels and can disappear or stop being playable outside YouTube, so preview them with the ↗ link.
 3. Bind playlists to scenarios. Drag a playlist onto a scenario card, or use the **+ Bind a playlist…** menu on the card. Drag a whole folder onto a card to bind every playlist inside it.
 4. Click ▶ on a scenario (in the panel, or the scenario buttons in the Playlists tab bar) to play it for everyone. The panel also has pause, next track, "another playlist from this scenario" and stop.
 
@@ -75,7 +68,7 @@ One-time setup by the GM:
 1. Go to <https://developer.spotify.com/dashboard> and create an app. Tick **Web API** and **Web Playback SDK**.
 2. In the control panel's **Spotify** section, copy the **Redirect URI**. It looks like `https://your-foundry/modules/dxcufgbs-scenario-soundtrack/auth/spotify-callback.html`. Add it under **Redirect URIs** in the Spotify app settings.
 3. New Spotify apps start in *development mode*, where only listed accounts may log in. Under **User Management**, add the Spotify e-mail of every player (and yourself).
-4. Copy the app's **Client ID** into the control panel (or **Configure Settings → Scenario Soundtracks**). No client secret is needed.
+4. Copy the app's **Client ID** into the control panel (or **Configure Settings → Dxcufgb's Scenario Soundtracks**). No client secret is needed.
 
 Each player (and the GM) then clicks the green Spotify button in the Playlists tab bar and logs in. The login is stored in that browser only. Each person's Spotify plays on their own account, so they hear the same playlist but may be on different tracks.
 
