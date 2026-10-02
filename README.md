@@ -12,6 +12,14 @@ In Foundry, go to **Add-on Modules → Install Module**, paste this link into **
 https://github.com/dxcufgb/FoundryVTT-scenario-soundtracks/releases/latest/download/module.json
 ```
 
+### Installing from a clone (development)
+
+The folder in `Data/modules` must be named after the module id, `scenario-soundtracks`. Otherwise Foundry reports *Invalid module "scenario-soundtracks" detected*. Clone it under that name:
+
+```
+git clone https://github.com/dxcufgb/FoundryVTT-scenario-soundtracks.git scenario-soundtracks
+```
+
 ## How it works
 
 - **Playlists.** The GM adds playlists by pasting links. You can add as many as you like and sort them into folders, and folders can go inside other folders. Supported links:
