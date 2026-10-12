@@ -78,3 +78,7 @@ Each player (and the GM) then clicks the green Spotify button in the Playlists t
 ## License
 
 [MIT](LICENSE)
+
+## Releasing
+
+For the maintainer: **Actions → Release module → Run workflow**, type the version (for example `1.2.3`) and run it. The module is checked and packaged first; only then is the release `v1.2.3` published with `module.json` and `module.zip`. CI and releases come from [dxcufgb/foundry-module-ci](https://github.com/dxcufgb/foundry-module-ci), the same for every module.
