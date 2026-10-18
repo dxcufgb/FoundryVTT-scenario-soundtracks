@@ -2,7 +2,7 @@
   "id": "dxcufgbs-scenario-soundtrack",
   "title": "Dxcufgb's Scenario Soundtracks",
   "description": "<p>Play Spotify, YouTube and YouTube Music playlists for scenarios like exploration and combat. The GM binds playlists to scenarios and custom themes in a control panel; the music follows each player's own music volume slider.</p>",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "authors": [
     {
       "name": "Dxcufgb",

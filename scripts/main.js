@@ -55,11 +55,6 @@ Hooks.once("init", () => {
     scope: "client", config: true, type: Boolean, default: true,
     onChange: () => onChange()
   });
-  game.settings.register(MODULE_ID, SETTINGS.askOnNewScene, {
-    name: "SST.Settings.AskOnNewScene.Name",
-    hint: "SST.Settings.AskOnNewScene.Hint",
-    scope: "client", config: true, type: Boolean, default: true
-  });
   game.settings.register(MODULE_ID, SETTINGS.spotifyAuth, {
     scope: "client", config: false, type: Object, default: {}
   });
@@ -75,6 +70,16 @@ Hooks.once("init", () => {
       openPanel();
       return true;
     }
+  });
+});
+
+// Registered in "setup" because game.user is not known yet during "init",
+// and only the GM should see this setting in the settings menu.
+Hooks.once("setup", () => {
+  game.settings.register(MODULE_ID, SETTINGS.askOnNewScene, {
+    name: "SST.Settings.AskOnNewScene.Name",
+    hint: "SST.Settings.AskOnNewScene.Hint",
+    scope: "client", config: game.user.isGM, type: Boolean, default: true
   });
 });
 
