@@ -1,5 +1,11 @@
 # Dxcufgb's Scenario Soundtracks
 
+[![Foundry v13](https://img.shields.io/github/v/release/dxcufgb/FoundryVTT-scenario-soundtracks?label=Foundry%20v13&logo=foundryvirtualtabletop&color=ff6400)](https://github.com/dxcufgb/FoundryVTT-scenario-soundtracks/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/dxcufgb/FoundryVTT-scenario-soundtracks/module.zip?label=downloads&color=blue)](https://github.com/dxcufgb/FoundryVTT-scenario-soundtracks/releases)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-support-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/dxcufgb)\
+[![CI](https://img.shields.io/github/actions/workflow/status/dxcufgb/FoundryVTT-scenario-soundtracks/ci.yml?branch=main&label=CI)](https://github.com/dxcufgb/FoundryVTT-scenario-soundtracks/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/dxcufgb/FoundryVTT-scenario-soundtracks)](LICENSE)
+
 Play **Spotify**, **YouTube** and **YouTube Music** playlists for the scenes at your table, like exploration, combat, a tavern or a boss fight. The GM sets them up in a control panel, and the music plays for everyone at their own **Music** volume.
 
 **Foundry VTT:** v13
