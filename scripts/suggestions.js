@@ -47,6 +47,7 @@ export const SUGGESTIONS = [
   { scenario: "dungeon", name: "Obscura – Dark Ambient Dungeon (mix)", url: "https://www.youtube.com/watch?v=a0Av2XNPd_g" },
 
   // Tension
+  { scenario: "tension", name: "D&D Dungeon", url: "https://music.youtube.com/playlist?list=PLVALMCEJKgVg" },
   { scenario: "tension", name: "D&D Horror Themes / Creepy / Suspense Music", url: "https://www.youtube.com/playlist?list=PLPLtDwdocumnlj0bPrLvRV6iKdArqVTAU" },
   { scenario: "tension", name: "DnD – Ominous Tension", url: "https://www.youtube.com/playlist?list=PLCAEGur85PKJPNrjpwgsOtTUU9qtOxNQp" },
   { scenario: "tension", name: "1 Hour of D&D Mystery Music (mix)", url: "https://www.youtube.com/watch?v=sGQFWM19DEw" },
