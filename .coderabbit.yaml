@@ -1,0 +1,29 @@
+# CodeRabbit settings for FoundryVTT-scenario-soundtracks.
+# Shared rules come from the central dxcufgb/coderabbit repository (inheritance: true), and CodeRabbit reads
+# the README as code guidelines. Only what is specific to this repository is here.
+# Paths here must not repeat a central path (scripts/**/*.js, .github/workflows/**, **/*.sh, **/*.ps1, **/*.iss,
+# module.json, **/*.md): an entry with the same path replaces the central one instead of adding to it.
+# Check the merged result on a pull request with: @coderabbitai configuration
+inheritance: true
+
+reviews:
+  path_instructions:
+    - path: "scripts/backends/spotify.js"
+      instructions: |
+        Spotify uses the PKCE flow without a client secret. Access and refresh tokens are a per-user `client`
+        setting with config: false: flag any change that stores them in a `world` setting, flags, chat or a log.
+        The callback data in localStorage is removed after use. Requests go only to Spotify's own hosts.
+    - path: "auth/**"
+      instructions: |
+        The OAuth callback page is published as a static file: it must not include secrets, must only hand the
+        code back to the opener/localStorage, and must not run anything taken from the URL as HTML or script.
+    - path: "scripts/**"
+      instructions: |
+        The GM sets up playlists and controls playback for everyone; players only listen. Playlist URLs and
+        titles from settings are escaped before use in HTML. Embedded players (YouTube, Spotify) are created only
+        from validated playlist ids, never from free-form URLs.
+    - path: ".github/workflows/{ci,release}.yml"
+      instructions: |
+        Thin callers of dxcufgb/foundry-module-ci, identical in every Foundry module repository. Flag any change
+        here that is not the same change in all modules (it belongs in foundry-module-ci instead), except the
+        pinned SHA of foundry-module-ci itself.
