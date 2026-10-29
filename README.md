@@ -27,11 +27,11 @@ https://github.com/dxcufgb/FoundryVTT-scenario-soundtracks/releases/latest/downl
   - YouTube playlists and videos (`youtube.com/playlist?list=...`, `youtube.com/watch?v=...`, `youtu.be/...`). A single video loops.
   - YouTube Music playlists, albums and songs (`music.youtube.com/playlist?list=...`, `music.youtube.com/watch?v=...`)
 - **Scenarios and themes.** The module comes with Exploration, Combat, Boss fight, Town, Tavern, Dungeon, Tension, Rest and Victory. You can add your own themes ("Feywild", "Haunted manor", …). Each scenario or theme can have any number of playlists bound to it. When it starts, one of them is picked, either at random (never the same one twice in a row) or in order.
-- **Everyone hears the same music.** When the GM starts a scenario, every connected player's client plays it. Players who join later start it too.
+- **Everyone hears the same music.** When the GM starts a scenario, every connected player's client plays it. Players who join later start it too. The Playlists tab shows players which scenario and playlist is playing; turn off **Configure Settings → Show players what is playing** to keep e.g. a "Boss fight" soundtrack a surprise (players then only see "Soundtrack playing").
 - **Volume.** The music follows each person's own **Music** slider in the Playlists tab, the same slider Foundry's own playlists use. A player who wants it quieter just moves that slider. **Play soundtracks on this computer** (Configure Settings) turns it off completely for one person.
 - **Scene soundtracks.** When the GM views a scene that hasn't been set up yet, a small dialog asks which scenario soundtrack belongs to it, and suggests one based on the scene's name. Choose a scenario, **No soundtrack**, or **Ask later**. When a scene with a soundtrack is activated, that scenario starts for everyone. To change it later, right-click the scene in the Scenes tab or the navigation bar and choose **Scenario soundtrack…**. Turn the question off under **Configure Settings → Ask for a soundtrack when viewing a new scene**.
 - **Import / export.** Save your whole setup to a file from the control panel: folders, playlists, scenarios and themes with their bound playlists, combat automation and scene soundtracks. You can then import it in another world. You can add it to that world's setup (playlists, folders and themes already there aren't duplicated) or replace that setup. Scene soundtracks are applied to scenes with the same name.
-- **Combat automation.** You can choose a scenario that starts when combat begins (Combat by default). When the combat is deleted, the music goes back to what was playing before.
+- **Combat automation.** In the control panel's **Automation** section you can choose a scenario that starts when combat begins (Combat by default), or **Nothing** to leave the music alone. When the combat is deleted, the music goes back to what was playing before, or stops if you untick **Go back to the previous music when combat ends**. If you start other music by hand during the fight, it is left alone when the combat ends.
 
 ## Using it (GM)
 
@@ -49,14 +49,32 @@ Drag playlists and folders onto folders to reorganise them. The search box filte
 ```js
 const sst = game.modules.get("dxcufgbs-scenario-soundtrack").api;
 sst.playScenario("Combat");          // by id or name, e.g. a custom theme "Feywild"
-sst.playScenario("tavern", { listId: "…" });
+sst.playScenario("tavern", { listId: "…" });  // a specific playlist bound to that scenario
 sst.playList("Spooky ambience");     // one playlist, by id or name
-sst.togglePause(); sst.skipTrack(); sst.nextList(); sst.stop();
+sst.pause(); sst.resume(); sst.togglePause();
+sst.skipTrack(); sst.nextList(); sst.stop();
+sst.playSceneScenario(canvas.scene); // play the scenario bound to a scene, unless it is already playing
+sst.getState();                      // what is playing: { scenarioId, listId, paused, … }
+sst.getLibrary();                    // a copy of { folders, lists, scenarios, automation }
 sst.openPanel();
-sst.bindScene();                     // ask which scenario belongs to the current scene
+sst.bindScene();                     // ask which scenario belongs to a scene (default: the current one)
 sst.exportSetup();                   // download the whole setup as a file
-sst.importSetup(json, { mode: "merge", scenes: true });  // or mode: "replace"
+await sst.importSetup(json, { mode: "merge", scenes: true });  // or mode: "replace"
 ```
+
+Only the GM can change the music. For players, the playback calls (`playScenario`, `playList`, `pause`, `resume`, `togglePause`, `skipTrack`, `nextList`, `stop`, `playSceneScenario`) are refused with the warning "Only the GM can control the soundtrack.", `openPanel` shows the same warning, and `bindScene` does nothing. Every client hears what the GM starts. The playback calls are async; all but `playSceneScenario` resolve to `true` when the music changed, or `false` when nothing happened (unknown name, no playlists bound, nothing playing, not the GM). GM: `importSetup` takes the export as an object or JSON text, throws when it isn't a Scenario Soundtracks export, and resolves to the counts of what was added (`{ folders, lists, scenarios, bindings, scenes }`). `exportSetup` also returns the exported data.
+
+**From another module.** The API is set in the `ready` hook, so use it from `ready` on and check that it is there:
+
+```js
+Hooks.once("ready", () => {
+  const sst = game.modules.get("dxcufgbs-scenario-soundtrack")?.api;
+  if (!sst) return;   // Scenario Soundtracks not installed or not enabled
+  // …
+});
+```
+
+Add `{ "id": "dxcufgbs-scenario-soundtrack", "type": "module" }` to `relationships.recommends` in your `module.json`. The module calls no hooks of its own; to react to the music changing, listen to `updateSetting` (and `createSetting`, the first time) for the setting with key `dxcufgbs-scenario-soundtrack.state`, and read it with `getState()`. A scene's soundtrack is the scene flag `scenario` (`scene.getFlag("dxcufgbs-scenario-soundtrack", "scenario")`): a scenario id, `""` for **No soundtrack**, or `undefined` when nobody has decided yet. `api.engine` is the player running on this client; it is internal and may change.
 
 ## YouTube / YouTube Music
 
