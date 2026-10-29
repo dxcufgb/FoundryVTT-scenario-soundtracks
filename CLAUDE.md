@@ -7,7 +7,8 @@ Music slider (`core.globalPlaylistVolume`). Scenes can carry a scenario, and com
 build step and no npm dependencies.
 
 ## Layout
-- `scripts/main.js` – settings, keybinding, the module API (`game.modules.get(...).api`), music-slider tracking, the
+- `scripts/main.js` – settings, keybinding, the module API (`game.modules.get(...).api`), the
+  `dxcufgbs-scenario-soundtrack.changed` hook (from the `state` setting's `onChange`), music-slider tracking, the
   Playlists tab bar hook, combat automation (`updateCombat` / `deleteCombat`).
 - `scripts/constants.js` – `MODULE_ID`, `SETTINGS` keys, `DEFAULT_SCENARIOS`, `SOURCE_ICONS`, `localize`,
   `escapeHTML`.
