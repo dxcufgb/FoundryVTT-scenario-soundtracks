@@ -14,6 +14,8 @@ import * as transfer from "./transfer.js";
 
 let engine = null;
 let panel = null;
+/** The playback state as this client last saw it, for the `previous` argument of the changed hook. */
+let lastState = null;
 
 function openPanel() {
   if (!game.user.isGM) return ui.notifications.warn(localize("Notify.GMOnly"));
@@ -28,6 +30,21 @@ function onChange({ play = true } = {}) {
   if (panel?.rendered) panel.render();
 }
 
+/**
+ * The playback state changed: tell other modules on this client.
+ * Hooks.callAll("dxcufgbs-scenario-soundtrack.changed", state, previous), both plain copies.
+ */
+function onStateChange() {
+  try {
+    const state = playback.getState();
+    const previous = lastState ?? {};
+    lastState = foundry.utils.deepClone(state);
+    Hooks.callAll(`${MODULE_ID}.changed`, state, previous);
+  } catch (err) {
+    console.error(`${MODULE_ID} | changed hook failed`, err);
+  }
+}
+
 Hooks.once("init", () => {
   game.settings.register(MODULE_ID, SETTINGS.library, {
     scope: "world", config: false, type: Object, default: {},
@@ -35,7 +52,10 @@ Hooks.once("init", () => {
   });
   game.settings.register(MODULE_ID, SETTINGS.state, {
     scope: "world", config: false, type: Object, default: {},
-    onChange: () => onChange()
+    onChange: () => {
+      onChange();
+      onStateChange();
+    }
   });
   game.settings.register(MODULE_ID, SETTINGS.spotifyClientId, {
     name: "SST.Settings.SpotifyClientId.Name",
@@ -85,6 +105,7 @@ Hooks.once("setup", () => {
 
 Hooks.once("ready", () => {
   engine = new SoundtrackEngine();
+  lastState = playback.getState();
 
   // Macro / module API, e.g. game.modules.get("dxcufgbs-scenario-soundtrack").api.playScenario("Combat")
   game.modules.get(MODULE_ID).api = {
@@ -103,8 +124,7 @@ Hooks.once("ready", () => {
     playSceneScenario,
     exportSetup: transfer.exportToFile,
     /** Import an export (object or JSON text). options: { mode: "merge"|"replace", scenes: boolean } */
-    importSetup: (data, options) => transfer.applyImport(transfer.parseExport(data), options),
-    engine
+    importSetup: (data, options) => transfer.applyImport(transfer.parseExport(data), options)
   };
 
   if (ui.playlists?.rendered) injectBar(ui.playlists, ui.playlists.element, engine, openPanel);

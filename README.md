@@ -74,7 +74,16 @@ Hooks.once("ready", () => {
 });
 ```
 
-Add `{ "id": "dxcufgbs-scenario-soundtrack", "type": "module" }` to `relationships.recommends` in your `module.json`. The module calls no hooks of its own; to react to the music changing, listen to `updateSetting` (and `createSetting`, the first time) for the setting with key `dxcufgbs-scenario-soundtrack.state`, and read it with `getState()`. A scene's soundtrack is the scene flag `scenario` (`scene.getFlag("dxcufgbs-scenario-soundtrack", "scenario")`): a scenario id, `""` for **No soundtrack**, or `undefined` when nobody has decided yet. `api.engine` is the player running on this client; it is internal and may change.
+Add `{ "id": "dxcufgbs-scenario-soundtrack", "type": "module" }` to `relationships.recommends` in your `module.json`. A scene's soundtrack is the scene flag `scenario` (`scene.getFlag("dxcufgbs-scenario-soundtrack", "scenario")`): a scenario id, `""` for **No soundtrack**, or `undefined` when nobody has decided yet.
+
+**Hook.** To react to the music changing, listen to `dxcufgbs-scenario-soundtrack.changed`. It is called with `Hooks.callAll(name, state, previous)` on every client (GM and players) each time the GM changes what is playing: a new scenario or playlist, pause, resume, skip or stop. `state` and `previous` are plain copies of the new and the old state, in the shape `getState()` returns (`{ scenarioId, listId, paused, skip, … }`; `listId` is `null` when the music stopped). `previous` is the state this client saw before the change. An error in your listener doesn't stop the music.
+
+```js
+Hooks.on("dxcufgbs-scenario-soundtrack.changed", (state, previous) => {
+  if (state.listId && !previous.listId) console.log("music started", state.scenarioId);
+  if (!state.listId) console.log("music stopped");
+});
+```
 
 ## YouTube / YouTube Music
 
