@@ -33,6 +33,8 @@
     "Scenario": {
       "Title": "Scenarios & themes",
       "AddTheme": "New theme",
+      "ClearAll": "Clear all",
+      "ClearAllHint": "Remove every playlist from every scenario and theme. The playlists stay in your library.",
       "NewTheme": "New theme",
       "Theme": "Theme",
       "Play": "Play this scenario for everyone",
@@ -95,7 +97,9 @@
       "DeleteList": "Delete playlist",
       "DeleteListText": "Delete <strong>{name}</strong>? It is also removed from every scenario it is bound to.",
       "DeleteScenario": "Delete theme",
-      "DeleteScenarioText": "Delete the theme <strong>{name}</strong>? The playlists themselves are kept."
+      "DeleteScenarioText": "Delete the theme <strong>{name}</strong>? The playlists themselves are kept.",
+      "ClearScenarios": "Clear all scenarios",
+      "ClearScenariosText": "Remove every playlist from every scenario and theme? The playlists stay in your library, and the scenarios and themes themselves are kept."
     },
     "Automation": {
       "Title": "Automation",

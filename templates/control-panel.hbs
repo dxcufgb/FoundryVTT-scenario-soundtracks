@@ -81,6 +81,7 @@
       <header class="sst-section-header">
         <h3><i class="fa-solid fa-masks-theater"></i> {{localize "SST.Scenario.Title"}}</h3>
         <div class="sst-header-buttons">
+          <button type="button" data-action="unbindAll" data-tooltip="{{localize "SST.Scenario.ClearAllHint"}}" {{#unless anyBound}}disabled{{/unless}}><i class="fa-solid fa-eraser"></i> {{localize "SST.Scenario.ClearAll"}}</button>
           <button type="button" data-action="createScenario"><i class="fa-solid fa-plus"></i> {{localize "SST.Scenario.AddTheme"}}</button>
         </div>
       </header>
