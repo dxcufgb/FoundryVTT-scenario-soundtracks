@@ -227,6 +227,7 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
       playScenario: ControlPanel._onPlayScenario,
       playBound: ControlPanel._onPlayBound,
       unbindList: ControlPanel._onUnbindList,
+      unbindAll: ControlPanel._onUnbindAll,
       stop: () => playback.stop(),
       togglePause: () => playback.togglePause(),
       skipTrack: () => playback.skipTrack(),
@@ -320,6 +321,7 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
       tree,
       empty: !lib.lists.length && !lib.folders.length,
       scenarios,
+      anyBound: scenarios.some(s => s.lists.length),
       filter: this.#filter,
       automation: {
         combatOptions: combatOptions.map(o => ({ ...o, selected: o.id === (lib.automation.combat ?? "") })),
@@ -551,6 +553,15 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
   static async _onUnbindList(event, target) {
     const scenarioId = target.closest("[data-scenario-id]").dataset.scenarioId;
     return library.unbindList(scenarioId, target.closest("[data-list-id]").dataset.listId);
+  }
+
+  static async _onUnbindAll() {
+    const ok = await DialogV2.confirm({
+      window: { title: localize("Dialog.ClearScenarios"), icon: "fa-solid fa-eraser" },
+      content: `<p>${localize("Dialog.ClearScenariosText")}</p>`,
+      rejectClose: false
+    });
+    if (ok) await library.unbindAll();
   }
 
   static async _onAddSuggestions() {

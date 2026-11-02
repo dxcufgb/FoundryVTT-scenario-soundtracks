@@ -338,6 +338,13 @@ export async function unbindList(scenarioId, listId) {
   });
 }
 
+/** Remove every playlist from every scenario. The playlists stay in the library. */
+export async function unbindAll() {
+  return editLibrary(lib => {
+    for (const scenario of lib.scenarios) scenario.lists = [];
+  });
+}
+
 export async function updateAutomation(data) {
   return editLibrary(lib => {
     Object.assign(lib.automation, data);
