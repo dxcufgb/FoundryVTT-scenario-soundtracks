@@ -43,7 +43,7 @@ build step and no npm dependencies.
   (client, visible), `askOnNewScene` (client, registered in `setup`, visible only to GMs), `spotifyAuth`,
   `expandedFolders` (client, hidden).
 - HTML built in strings goes through `escapeHTML`; the panel template uses `{{ }}` only (no `{{{ }}}`).
-- Update `README.md` when behaviour, settings or the Spotify setup steps change.
+- Update the wiki (not `README.md`, which only has the install steps and links to the wiki) when behaviour, settings or the Spotify setup steps change.
 
 ## Review focus
 - **Spotify tokens** live only in the `spotifyAuth` setting: `scope: "client"`, `config: false`, i.e. this browser's
