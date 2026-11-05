@@ -8,6 +8,7 @@ import { getLibrary, parseSource } from "./library.js";
 import { getState } from "./state.js";
 import { YouTubeBackend } from "./backends/youtube.js";
 import { SpotifyBackend } from "./backends/spotify.js";
+import { crumb } from "./debug-recorder.js";
 
 const FADE_MS = 800;
 
@@ -22,6 +23,10 @@ export class SoundtrackEngine {
 
   /** What this client is playing: { token, listId, backend, skip, paused, started, listVolume } */
   current = null;
+
+  /** Failed syncs on this client and the last error's class name (for the debug recorder). */
+  failures = 0;
+  lastError = null;
 
   #musicVolume = getMusicVolume();
   #queue = Promise.resolve();
@@ -49,6 +54,9 @@ export class SoundtrackEngine {
   /** Re-read the state and catch up. Calls are queued so they never overlap. */
   sync() {
     this.#queue = this.#queue.then(() => this.#sync()).catch(err => {
+      this.failures++;
+      this.lastError = err?.name ?? "Error";
+      crumb("engine.syncFailed", { error: this.lastError, status: Number.isFinite(err?.status) ? err.status : null });
       console.error(`${MODULE_ID} | playback failed`, err);
       if (game.user.isGM) ui.notifications.error(localize("Notify.PlaybackFailed", { error: err.message }));
     });
@@ -60,6 +68,7 @@ export class SoundtrackEngine {
     const list = state.listId ? getLibrary().lists.find(l => l.id === state.listId) : null;
     const source = list ? parseSource(list.url) : null;
     if (!this.enabled || !list || !source) {
+      if (this.current) crumb("engine.stop", { reason: !this.enabled ? "disabled" : !list ? "noList" : "badLink" });
       await this.#stopCurrent();
       return;
     }
@@ -88,6 +97,10 @@ export class SoundtrackEngine {
       await game.audio.unlock;
       if (this.current !== current) return;
       current.started = await current.backend.play(current.source, { shuffle: list.shuffle, volume: this.volume });
+      crumb("engine.play", {
+        backend: current.backend.name, kind: current.source.kind, music: !!current.source.music,
+        started: !!current.started, shuffle: !!list.shuffle
+      });
       current.paused = false;
       current.skip = state.skip ?? 0;
       return;

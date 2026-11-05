@@ -9,6 +9,7 @@
 import { MODULE_ID, SETTINGS, localize, escapeHTML } from "./constants.js";
 import { getLibrary, scenarioName } from "./library.js";
 import * as playback from "./state.js";
+import { crumb, scenarioTag } from "./debug-recorder.js";
 
 const { DialogV2 } = foundry.applications.api;
 const FLAG = "scenario";
@@ -85,9 +86,11 @@ export async function promptSceneScenario(scene, { change = false } = {}) {
     rejectClose: false
   });
   if (result === null || result === undefined || result === "later") {
+    crumb("scene.prompt", { change, result: "later" });
     postponed.add(scene.id);
     return;
   }
+  crumb("scene.prompt", { change, result: result ? "bind" : "none", scenario: scenarioTag(result), guessed: !!selected && selected === result });
 
   await scene.setFlag(MODULE_ID, FLAG, result);
   if (result && scene.active) await playSceneScenario(scene);
@@ -99,9 +102,29 @@ export async function playSceneScenario(scene) {
   if (!scenarioId) return;
   const lib = getLibrary();
   const scenario = lib.scenarios.find(s => s.id === scenarioId);
-  if (!scenario?.lists.length) return;
-  if (playback.getState().scenarioId === scenarioId) return;
+  const tag = scenarioTag(scenarioId);
+  if (!scenario?.lists.length) {
+    crumb("scene.play", { result: "noLists", scenario: tag });
+    return;
+  }
+  if (playback.getState().scenarioId === scenarioId) {
+    crumb("scene.play", { result: "alreadyPlaying", scenario: tag });
+    return;
+  }
+  crumb("scene.play", { result: "play", scenario: tag });
   await playback.playScenario(scenarioId);
+}
+
+/** How many scenes have a scenario, "no soundtrack" or no decision yet (for the debug recorder). */
+export function sceneBindingCounts() {
+  const counts = { bound: 0, none: 0, undecided: 0, postponed: postponed.size };
+  for (const scene of game.scenes ?? []) {
+    const value = sceneScenario(scene);
+    if (value === undefined) counts.undecided++;
+    else if (value) counts.bound++;
+    else counts.none++;
+  }
+  return counts;
 }
 
 function contextEntry() {

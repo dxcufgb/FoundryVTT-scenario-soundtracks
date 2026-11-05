@@ -4,6 +4,7 @@
  */
 
 import { localize } from "../constants.js";
+import { crumb } from "../debug-recorder.js";
 
 const API_URL = "https://www.youtube.com/iframe_api";
 const MAX_ERRORS_IN_A_ROW = 10;
@@ -56,8 +57,24 @@ export class YouTubeBackend {
   #errors = 0;
   #wantPlaying = false;
 
+  /** Last YouTube player error code (2, 5, 100, 101, 150) on this client, for the debug recorder. */
+  lastErrorCode = null;
+
   get available() {
     return true;
+  }
+
+  /** Plain state for the debug recorder: no ids or links. */
+  get debugState() {
+    return {
+      apiLoaded: !!window.YT?.Player,
+      playerCreated: !!this.player,
+      kind: this.#source?.kind ?? null,
+      wantPlaying: this.#wantPlaying,
+      shuffle: this.#shuffle,
+      errorsInARow: this.#errors,
+      lastErrorCode: this.lastErrorCode
+    };
   }
 
   #ensurePlayer() {
@@ -171,6 +188,8 @@ export class YouTubeBackend {
     console.warn(`dxcufgbs-scenario-soundtrack | YouTube error ${event.data}`, this.#source);
     if (!this.#source) return;
     this.#errors++;
+    this.lastErrorCode = Number(event.data) || null;
+    crumb("youtube.error", { code: this.lastErrorCode, inARow: this.#errors, kind: this.#source.kind });
     if (this.#source.kind === "playlist" && this.#errors < MAX_ERRORS_IN_A_ROW) {
       this.player.nextVideo();
       return;

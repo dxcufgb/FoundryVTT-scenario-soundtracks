@@ -6,6 +6,7 @@
 
 import { MODULE_ID, localize } from "./constants.js";
 import { getLibrary, normalizeLibrary, saveLibrary, sameSource, scenarioName } from "./library.js";
+import { crumb } from "./debug-recorder.js";
 
 export const EXPORT_FORMAT = "dxcufgbs-scenario-soundtrack";
 export const EXPORT_VERSION = 1;
@@ -45,6 +46,7 @@ export function sceneBindings() {
 /** Download the current setup as a JSON file. */
 export function exportToFile() {
   const data = buildExport(getLibrary(), sceneBindings());
+  crumb("transfer.export", { lists: data.library.lists.length, scenes: data.scenes.length });
   const world = (game.world?.id ?? "world").replace(/[^\w-]+/g, "-");
   foundry.utils.saveDataToFile(JSON.stringify(data, null, 2), "application/json", `scenario-soundtracks-${world}.json`);
   return data;
@@ -267,5 +269,6 @@ export async function applyImport(parsed, { mode = "merge", scenes = true } = {}
       sceneCount++;
     }
   }
+  crumb("transfer.import", { mode: mode === "replace" ? "replace" : "merge", withScenes: !!scenes, ...counts, scenes: sceneCount });
   return { ...counts, scenes: sceneCount };
 }

@@ -30,6 +30,10 @@ build step and no npm dependencies.
 - `scripts/sidebar.js` – the bar in the Playlists tab (now playing, Spotify connect for everyone, GM controls).
 - `scripts/scenes.js` – scene ↔ scenario binding (scene flag `scenario`), the "which soundtrack?" prompt, playing
   on scene activation, scene context-menu entries.
+- `scripts/debug-recorder.js` – optional integration with Dxcufgb's Debug Recorder (`dxcufgbs-debug-recorder`, not a
+  dependency): registers on the recorder's `dxcufgbs-debug-recorder.ready` hook or, if it was ready first, from this
+  module's `ready` (once); `crumb(key, data)` leaves breadcrumbs only while it records and never throws;
+  `scenarioTag` turns scenario ids into built-in ids or `"custom"`. The snapshot is `debugSnapshot()` in `main.js`.
 - `scripts/transfer.js` – export / import of the whole setup (`parseExport` validates and cleans the file,
   `mergeLibrary`, `applyImport`). `scripts/suggestions.js` – `SUGGESTIONS`, the built-in suggested playlists.
 - `styles/soundtracks.css`, `lang/en.json` (`SST.*`).
@@ -43,6 +47,10 @@ build step and no npm dependencies.
   (client, visible), `askOnNewScene` (client, registered in `setup`, visible only to GMs), `spotifyAuth`,
   `expandedFolders` (client, hidden).
 - HTML built in strings goes through `escapeHTML`; the panel template uses `{{ }}` only (no `{{{ }}}`).
+- The debug-recorder integration is optional: everything works without the recorder, and `crumb` / the snapshot
+  must never throw. Snapshot and breadcrumb data must never contain names, free text, image paths or URLs (here also:
+  no playlist / video ids, no Spotify tokens or Client ID, no error messages), only counts, booleans, numbers and the
+  module's own fixed values (built-in scenario ids via `scenarioTag`, source / kind names, error codes).
 - Update the wiki (not `README.md`, which only has the install steps and links to the wiki) when behaviour, settings or the Spotify setup steps change.
 
 ## Review focus

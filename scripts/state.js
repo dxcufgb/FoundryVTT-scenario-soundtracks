@@ -7,6 +7,7 @@
 
 import { MODULE_ID, SETTINGS, localize } from "./constants.js";
 import { getLibrary, findScenario, findList, scenarioName } from "./library.js";
+import { crumb, scenarioTag } from "./debug-recorder.js";
 
 export function getState() {
   return foundry.utils.deepClone(game.settings.get(MODULE_ID, SETTINGS.state) ?? {});
@@ -14,6 +15,7 @@ export function getState() {
 
 async function setState(next) {
   if (!game.user.isGM) {
+    crumb("playback.refused", { reason: "notGM" });
     ui.notifications.warn(localize("Notify.GMOnly"));
     return false;
   }
@@ -46,15 +48,21 @@ export async function playScenario(idOrName, { listId, auto = null, previous = n
   const lib = getLibrary();
   const scenario = findScenario(lib, idOrName);
   if (!scenario) {
+    crumb("playback.playScenario", { result: "noScenario", auto: !!auto });
     ui.notifications.warn(localize("Notify.NoScenario", { name: idOrName }));
     return false;
   }
   const state = getState();
   const chosen = listId && scenario.lists.includes(listId) ? listId : pickList(scenario, state);
   if (!chosen) {
+    crumb("playback.playScenario", { result: "noLists", scenario: scenarioTag(scenario.id), auto: !!auto });
     ui.notifications.warn(localize("Notify.NoListsBound", { name: scenarioName(scenario) }));
     return false;
   }
+  crumb("playback.playScenario", {
+    result: "ok", scenario: scenarioTag(scenario.id), mode: scenario.mode, lists: scenario.lists.length,
+    listGiven: chosen === listId, auto: !!auto, hasPrevious: !!previous
+  });
   const rotation = { ...(state.rotation ?? {}), [scenario.id]: scenario.lists.indexOf(chosen) };
   return setState({
     scenarioId: scenario.id, listId: chosen, token: foundry.utils.randomID(),
@@ -66,9 +74,11 @@ export async function playScenario(idOrName, { listId, auto = null, previous = n
 export async function playList(idOrName) {
   const list = findList(getLibrary(), idOrName);
   if (!list) {
+    crumb("playback.playList", { result: "noList" });
     ui.notifications.warn(localize("Notify.NoList", { name: idOrName }));
     return false;
   }
+  crumb("playback.playList", { result: "ok" });
   const state = getState();
   return setState({
     scenarioId: null, listId: list.id, token: foundry.utils.randomID(),
@@ -78,18 +88,21 @@ export async function playList(idOrName) {
 
 export async function stop() {
   const state = getState();
+  crumb("playback.control", { action: "stop", wasPlaying: !!state.listId, wasAuto: !!state.auto });
   return setState({ scenarioId: null, listId: null, token: null, paused: false, skip: 0, rotation: state.rotation ?? {}, auto: null, previous: null });
 }
 
 export async function pause() {
   const state = getState();
   if (!state.listId) return false;
+  crumb("playback.control", { action: "pause" });
   return setState({ ...state, paused: true });
 }
 
 export async function resume() {
   const state = getState();
   if (!state.listId) return false;
+  crumb("playback.control", { action: "resume" });
   return setState({ ...state, paused: false });
 }
 
@@ -101,6 +114,7 @@ export async function togglePause() {
 export async function skipTrack() {
   const state = getState();
   if (!state.listId) return false;
+  crumb("playback.control", { action: "skip", skip: (state.skip ?? 0) + 1 });
   return setState({ ...state, skip: (state.skip ?? 0) + 1, paused: false });
 }
 
