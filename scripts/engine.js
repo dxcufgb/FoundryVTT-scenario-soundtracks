@@ -8,7 +8,7 @@ import { getLibrary, parseSource } from "./library.js";
 import { getState } from "./state.js";
 import { YouTubeBackend } from "./backends/youtube.js";
 import { SpotifyBackend } from "./backends/spotify.js";
-import { crumb } from "./debug-recorder.js";
+import { crumb, errorCode } from "./debug-recorder.js";
 
 const FADE_MS = 800;
 
@@ -24,7 +24,7 @@ export class SoundtrackEngine {
   /** What this client is playing: { token, listId, backend, skip, paused, started, listVolume } */
   current = null;
 
-  /** Failed syncs on this client and the last error's class name (for the debug recorder). */
+  /** Failed syncs on this client and the last error's fixed code (`errorCode`, for the debug recorder). */
   failures = 0;
   lastError = null;
 
@@ -55,7 +55,7 @@ export class SoundtrackEngine {
   sync() {
     this.#queue = this.#queue.then(() => this.#sync()).catch(err => {
       this.failures++;
-      this.lastError = err?.name ?? "Error";
+      this.lastError = errorCode(err);
       crumb("engine.syncFailed", { error: this.lastError, status: Number.isFinite(err?.status) ? err.status : null });
       console.error(`${MODULE_ID} | playback failed`, err);
       if (game.user.isGM) ui.notifications.error(localize("Notify.PlaybackFailed", { error: err.message }));

@@ -50,7 +50,8 @@ build step and no npm dependencies.
 - The debug-recorder integration is optional: everything works without the recorder, and `crumb` / the snapshot
   must never throw. Snapshot and breadcrumb data must never contain names, free text, image paths or URLs (here also:
   no playlist / video ids, no Spotify tokens or Client ID, no error messages), only counts, booleans, numbers and the
-  module's own fixed values (built-in scenario ids via `scenarioTag`, source / kind names, error codes).
+  module's own fixed values (built-in scenario ids via `scenarioTag`, source / kind names, numeric error codes and
+  `errorCode()` values: a built-in error class name or `"other"`).
 - Update the wiki (not `README.md`, which only has the install steps and links to the wiki) when behaviour, settings or the Spotify setup steps change.
 
 ## Review focus
