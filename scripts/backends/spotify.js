@@ -7,6 +7,7 @@
  */
 
 import { MODULE_ID, SETTINGS, localize } from "../constants.js";
+import { crumb } from "../debug-recorder.js";
 
 const SDK_URL = "https://sdk.scdn.co/spotify-player.js";
 const AUTH_URL = "https://accounts.spotify.com/authorize";
@@ -119,6 +120,7 @@ export class SpotifyAuth {
       window.addEventListener("storage", onStorage);
     });
 
+    crumb("spotify.login", { result: result.error || !result.code ? "failed" : "code" });
     if (result.error || !result.code) throw new Error(localize("Spotify.LoginFailed", { error: result.error ?? "no code" }));
     const data = await this.#requestToken({
       client_id: clientId,
@@ -167,6 +169,7 @@ export class SpotifyAuth {
       refresh_token: tokens.refreshToken
     }).then(data => this.#storeTokenResponse(data, tokens.clientId, tokens.refreshToken))
       .catch(async err => {
+        crumb("spotify.error", { type: "refresh", invalidGrant: err.code === "invalid_grant" });
         // A revoked or expired refresh token means logging in again.
         if (err.code === "invalid_grant") await this.logout();
         throw err;
@@ -221,10 +224,24 @@ export class SpotifyBackend {
     return SpotifyAuth.configured && this.auth.connected;
   }
 
+  /** Plain state for the debug recorder: booleans and the fixed warning keys only, never tokens or ids. */
+  get debugState() {
+    return {
+      configured: SpotifyAuth.configured,
+      connected: this.auth.connected,
+      sdkLoaded: !!window.Spotify?.Player,
+      playerCreated: !!this.player,
+      deviceReady: !!this.deviceId,
+      playing: this.#playing,
+      warned: [...this.#warned]
+    };
+  }
+
   /** Show a warning once per session. */
   warnOnce(key, message) {
     if (this.#warned.has(key)) return;
     this.#warned.add(key);
+    crumb("spotify.error", { type: "warning", key });
     ui.notifications.warn(message, { permanent: key !== "notConnected" });
   }
 
@@ -338,6 +355,7 @@ export class SpotifyBackend {
         await this.api("PUT", "/me/player/play", { query: { device_id: this.deviceId }, body });
         break;
       } catch (err) {
+        crumb("spotify.error", { type: "play", status: Number(err.status) || null, attempt, premiumRequired: err.reason === "PREMIUM_REQUIRED" });
         if (err.status === 404 && attempt < 2) {
           await sleep(1500);
           continue;

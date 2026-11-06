@@ -9,8 +9,9 @@ import * as playback from "./state.js";
 import { SoundtrackEngine } from "./engine.js";
 import { ControlPanel } from "./apps/control-panel.js";
 import { injectBar, refreshSidebar } from "./sidebar.js";
-import { registerSceneHooks, promptSceneScenario, playSceneScenario } from "./scenes.js";
+import { registerSceneHooks, promptSceneScenario, playSceneScenario, sceneBindingCounts } from "./scenes.js";
 import * as transfer from "./transfer.js";
+import { crumb, registerDebugRecorder, scenarioTag } from "./debug-recorder.js";
 
 let engine = null;
 let panel = null;
@@ -20,6 +21,7 @@ let lastState = null;
 function openPanel() {
   if (!game.user.isGM) return ui.notifications.warn(localize("Notify.GMOnly"));
   panel ??= new ControlPanel();
+  crumb("app.render", { app: "controlPanel", wasOpen: !!panel.rendered });
   return panel.render({ force: true });
 }
 
@@ -129,7 +131,90 @@ Hooks.once("ready", () => {
 
   if (ui.playlists?.rendered) injectBar(ui.playlists, ui.playlists.element, engine, openPanel);
   engine.sync();
+  registerDebugRecorder(debugSnapshot);
 });
+
+/* -------------------------------------------- */
+/*  Debug Recorder (optional)                    */
+/* -------------------------------------------- */
+
+/**
+ * Runtime state for Dxcufgb's Debug Recorder: counts, booleans and this module's own fixed ids only.
+ * No playlist, folder, scenario or scene names, no links or playlist/video ids, no Spotify tokens.
+ */
+function debugSnapshot() {
+  const lib = library.getLibrary();
+  const state = playback.getState();
+  const bySource = { spotify: 0, youtube: 0, youtubeMusic: 0, invalid: 0 };
+  const byKind = {};
+  for (const list of lib.lists) {
+    const parsed = library.parseSource(list.url);
+    if (!parsed) bySource.invalid++;
+    else {
+      bySource[parsed.source === "spotify" ? "spotify" : parsed.music ? "youtubeMusic" : "youtube"]++;
+      byKind[parsed.kind] = (byKind[parsed.kind] ?? 0) + 1;
+    }
+  }
+  const currentList = lib.lists.find(l => l.id === state.listId);
+  const currentSource = currentList ? library.parseSource(currentList.url) : null;
+  const current = engine?.current;
+  return {
+    ready: !!engine,
+    isGM: game.user.isGM,
+    responsibleGM: playback.isResponsibleGM(),
+    library: {
+      folders: lib.folders.length,
+      suggestedFolders: lib.folders.filter(f => f.suggested).length,
+      lists: lib.lists.length,
+      listsBySource: bySource,
+      listsByKind: byKind,
+      listsNotShuffled: lib.lists.filter(l => l.shuffle === false).length,
+      listsWithOwnVolume: lib.lists.filter(l => (l.volume ?? 1) !== 1).length,
+      scenariosBuiltin: lib.scenarios.filter(s => s.builtin).length,
+      scenariosCustom: lib.scenarios.filter(s => !s.builtin).length,
+      scenariosWithLists: lib.scenarios.filter(s => s.lists.length).length,
+      scenariosSequence: lib.scenarios.filter(s => s.mode === "sequence").length,
+      bindings: lib.scenarios.reduce((sum, s) => sum + s.lists.length, 0),
+      automation: {
+        combatScenario: scenarioTag(lib.automation.combat),
+        restoreAfterCombat: !!lib.automation.restoreAfterCombat
+      }
+    },
+    state: {
+      playing: !!state.listId,
+      listFound: !!currentList,
+      source: currentSource ? (currentSource.source === "spotify" ? "spotify" : currentSource.music ? "youtubeMusic" : "youtube") : null,
+      kind: currentSource?.kind ?? null,
+      scenario: scenarioTag(state.scenarioId),
+      paused: !!state.paused,
+      skip: state.skip ?? 0,
+      auto: !!state.auto,
+      hasPrevious: !!(state.previous?.scenarioId || state.previous?.listId),
+      rotations: Object.keys(state.rotation ?? {}).length
+    },
+    engine: engine ? {
+      enabled: engine.enabled,
+      current: current ? {
+        backend: current.backend?.name ?? null,
+        kind: current.source?.kind ?? null,
+        started: !!current.started,
+        paused: !!current.paused,
+        inStep: current.token === state.token
+      } : null,
+      volume: Math.round(engine.volume * 100) / 100,
+      syncFailures: engine.failures,
+      lastError: engine.lastError,
+      youtube: engine.youtube.debugState,
+      spotify: engine.spotify.debugState
+    } : null,
+    scenes: sceneBindingCounts(),
+    combatsSwitched: switchedCombats.size,
+    panelOpen: !!panel?.rendered,
+    bars: document.querySelectorAll(".sst-bar").length,
+    secureContext: !!window.isSecureContext,
+    exportVersion: transfer.EXPORT_VERSION
+  };
+}
 
 registerSceneHooks();
 
@@ -172,10 +257,17 @@ Hooks.on("updateCombat", (combat, changed) => {
   const lib = library.getLibrary();
   const scenarioId = lib.automation.combat;
   const scenario = lib.scenarios.find(s => s.id === scenarioId);
-  if (!scenario?.lists.length) return;
+  if (!scenario?.lists.length) {
+    crumb("combat.start", { result: scenarioId ? "noLists" : "off", scenario: scenarioTag(scenarioId) });
+    return;
+  }
   const state = playback.getState();
   // Leave the music alone when the GM already picked this scenario by hand.
-  if (state.scenarioId === scenarioId && !state.auto) return;
+  if (state.scenarioId === scenarioId && !state.auto) {
+    crumb("combat.start", { result: "alreadyPlaying", scenario: scenarioTag(scenarioId) });
+    return;
+  }
+  crumb("combat.start", { result: "switch", scenario: scenarioTag(scenarioId), chained: !!state.auto });
   const previous = state.auto ? state.previous : { scenarioId: state.scenarioId ?? null, listId: state.listId ?? null };
   playback.playScenario(scenarioId, { auto: combat.id, previous });
 });
@@ -184,6 +276,8 @@ Hooks.on("deleteCombat", combat => {
   if (!playback.isResponsibleGM()) return;
   const state = playback.getState();
   if (state.auto !== combat.id) return;
-  if (library.getLibrary().automation.restoreAfterCombat) playback.restorePrevious(state.previous);
+  const restore = !!library.getLibrary().automation.restoreAfterCombat;
+  crumb("combat.end", { result: restore ? "restore" : "stop", hasPrevious: !!(state.previous?.scenarioId || state.previous?.listId) });
+  if (restore) playback.restorePrevious(state.previous);
   else playback.stop();
 });
