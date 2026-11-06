@@ -60,7 +60,7 @@ export async function playScenario(idOrName, { listId, auto = null, previous = n
     return false;
   }
   crumb("playback.playScenario", {
-    result: "ok", scenario: scenarioTag(scenario.id), mode: scenario.mode, lists: scenario.lists.length,
+    result: "ok", scenario: scenarioTag(scenario.id), mode: scenario.mode === "sequence" ? "sequence" : "random", lists: scenario.lists.length,
     listGiven: chosen === listId, auto: !!auto, hasPrevious: !!previous
   });
   const rotation = { ...(state.rotation ?? {}), [scenario.id]: scenario.lists.indexOf(chosen) };
