@@ -309,6 +309,7 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
       title: nowScenario ? library.scenarioName(nowScenario) : nowList.name,
       subtitle: nowScenario ? nowList.name : localize("Panel.SingleList"),
       icon: library.sourceIcon(library.parseSource(nowList.url)),
+      track: this.track,
       paused: !!state.paused,
       scenario: !!nowScenario && nowScenario.lists.length > 1,
       auto: !!state.auto
@@ -374,6 +375,18 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
       this.#filter = event.target.value.trim().toLowerCase();
       this.#applyFilter();
     });
+  }
+
+  /** The song this client is playing; set by main.js. */
+  track = "";
+
+  /** A new song started: update the line in place, without re-rendering the panel. */
+  setTrack(title) {
+    this.track = title;
+    const line = this.rendered ? this.element.querySelector(".sst-now-track") : null;
+    if (!line) return;
+    line.textContent = title;
+    line.hidden = !title;
   }
 
   async _onRender(context, options) {

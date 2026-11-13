@@ -11,6 +11,7 @@ import { SpotifyBackend } from "./backends/spotify.js";
 import { crumb, errorCode } from "./debug-recorder.js";
 
 const FADE_MS = 800;
+const MAX_TRACK_LENGTH = 200;
 
 /** Foundry's music volume (0..1), as set by the slider in the Playlists tab. */
 export function getMusicVolume() {
@@ -24,12 +25,38 @@ export class SoundtrackEngine {
   /** What this client is playing: { token, listId, backend, skip, paused, started, listVolume } */
   current = null;
 
+  /**
+   * The song this client is playing right now ("" when unknown or silent). It is local to this browser:
+   * with shuffle every listener hears their own order, so it is never stored or sent anywhere.
+   */
+  track = "";
+
+  /** Called with the new title whenever `track` changes. */
+  onTrackChange = null;
+
   /** Failed syncs on this client and the last error's fixed code (`errorCode`, for the debug recorder). */
   failures = 0;
   lastError = null;
 
   #musicVolume = getMusicVolume();
   #queue = Promise.resolve();
+
+  constructor() {
+    for (const backend of this.backends) backend.onTrack = title => this.#setTrack(backend, title);
+  }
+
+  /** A backend reports its current song; only the backend that is playing counts. */
+  #setTrack(backend, title) {
+    if (backend && this.current?.backend !== backend) return;
+    const track = String(title ?? "").trim().slice(0, MAX_TRACK_LENGTH);
+    if (track === this.track) return;
+    this.track = track;
+    try {
+      this.onTrackChange?.(track);
+    } catch (err) {
+      console.error(`${MODULE_ID} | track display failed`, err);
+    }
+  }
 
   get enabled() {
     return game.settings.get(MODULE_ID, SETTINGS.enabled);
@@ -120,6 +147,7 @@ export class SoundtrackEngine {
   async #stopCurrent() {
     const current = this.current;
     this.current = null;
+    this.#setTrack(null, "");
     if (!current?.started) return;
     if (!current.paused) await this.#fadeOut(current.backend, this.#musicVolume * current.listVolume);
     current.backend.stop();

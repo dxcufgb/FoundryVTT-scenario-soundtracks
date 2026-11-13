@@ -5,6 +5,7 @@
       <div class="sst-now-text">
         <strong>{{now.title}}</strong>
         <span>{{now.subtitle}}{{#if now.auto}} · {{localize "SST.Panel.Automatic"}}{{/if}}{{#if now.paused}} · {{localize "SST.Bar.Paused"}}{{/if}}</span>
+        <span class="sst-now-track" data-tooltip="{{localize "SST.Bar.Song"}}" {{#unless now.track}}hidden{{/unless}}>{{now.track}}</span>
       </div>
       <div class="sst-now-controls">
         <button type="button" data-action="togglePause" data-tooltip="{{#if now.paused}}{{localize "SST.Panel.Resume"}}{{else}}{{localize "SST.Panel.Pause"}}{{/if}}">

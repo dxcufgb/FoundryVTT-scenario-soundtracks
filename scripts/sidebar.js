@@ -15,6 +15,28 @@ function button(action, icon, tooltip, { active = false, data = "" } = {}) {
     data-tooltip="${escapeHTML(tooltip)}" aria-label="${escapeHTML(tooltip)}"><i class="${escapeHTML(icon)}"></i></button>`;
 }
 
+/** One line of the now-playing text; the inner span is what scrolls. */
+function line(type, text, label) {
+  return `<div class="sst-line sst-line-${type}" data-tooltip="${escapeHTML(`${localize(label)}: ${text}`)}"><span>${escapeHTML(text)}</span></div>`;
+}
+
+/** Let the lines that are wider than the bar scroll back and forth. */
+function fitLines(bar) {
+  for (const el of bar.querySelectorAll(".sst-line")) {
+    el.classList.remove("sst-scroll");
+    const overflow = el.scrollWidth - el.clientWidth;
+    if (!el.clientWidth || overflow <= 1) continue;
+    el.style.setProperty("--sst-shift", `-${overflow}px`);
+    el.style.setProperty("--sst-duration", `${Math.max(5, 4 + overflow / 25)}s`);
+    el.classList.add("sst-scroll");
+  }
+}
+
+/** Measures again when a bar gets its size (tab shown, sidebar resized, popped out). */
+const resizeObserver = new ResizeObserver(entries => {
+  for (const entry of entries) fitLines(entry.target);
+});
+
 function buildBar(engine) {
   const lib = getLibrary();
   const state = playback.getState();
@@ -25,11 +47,15 @@ function buildBar(engine) {
 
   let now = `<span class="sst-now-idle">${escapeHTML(localize("Bar.Idle"))}</span>`;
   if (list && showNow) {
-    const title = scenario ? scenarioName(scenario) : list.name;
-    const subtitle = scenario ? list.name : "";
+    // Scenario, list and song on a line each; a line that does not fit scrolls (fitLines).
+    const lines = [
+      scenario ? line("scenario", scenarioName(scenario), "Bar.Scenario") : "",
+      line("list", list.name, "Bar.List"),
+      engine.track ? line("song", engine.track, "Bar.Song") : ""
+    ].join("");
     now = `<i class="${sourceIcon(parseSource(list.url))}"></i>
-      <span class="sst-now-text"><strong>${escapeHTML(title)}</strong>${subtitle ? ` <span>${escapeHTML(subtitle)}</span>` : ""}</span>
-      ${state.paused ? `<span class="sst-paused">${escapeHTML(localize("Bar.Paused"))}</span>` : ""}`;
+      <div class="sst-now-text">${lines}</div>
+      ${state.paused ? `<i class="fa-solid fa-pause sst-paused" data-tooltip="${escapeHTML(localize("Bar.Paused"))}"></i>` : ""}`;
   } else if (list) {
     now = `<i class="fa-solid fa-music"></i> <span class="sst-now-text">${escapeHTML(localize(state.paused ? "Bar.Paused" : "Bar.Playing"))}</span>`;
   }
@@ -108,7 +134,11 @@ async function onBarClick(event, engine, openPanel) {
 export function injectBar(app, html, engine, openPanel) {
   const root = html instanceof HTMLElement ? html : html?.[0];
   if (!root) return;
-  root.querySelector(`.${BAR_CLASS}`)?.remove();
+  const old = root.querySelector(`.${BAR_CLASS}`);
+  if (old) {
+    resizeObserver.unobserve(old);
+    old.remove();
+  }
   const bar = document.createElement("section");
   bar.className = BAR_CLASS;
   bar.innerHTML = buildBar(engine);
@@ -116,9 +146,13 @@ export function injectBar(app, html, engine, openPanel) {
   const header = root.querySelector(".directory-header");
   if (header) header.after(bar);
   else root.prepend(bar);
+  resizeObserver.observe(bar);
 }
 
 /** Update every bar on the page (sidebar and popped-out Playlists tabs). */
 export function refreshSidebar(engine) {
-  for (const bar of document.querySelectorAll(`.${BAR_CLASS}`)) bar.innerHTML = buildBar(engine);
+  for (const bar of document.querySelectorAll(`.${BAR_CLASS}`)) {
+    bar.innerHTML = buildBar(engine);
+    fitLines(bar);
+  }
 }

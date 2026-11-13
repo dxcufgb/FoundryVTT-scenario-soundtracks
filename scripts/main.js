@@ -21,6 +21,7 @@ let lastState = null;
 function openPanel() {
   if (!game.user.isGM) return ui.notifications.warn(localize("Notify.GMOnly"));
   panel ??= new ControlPanel();
+  panel.track = engine?.track ?? "";
   crumb("app.render", { app: "controlPanel", wasOpen: !!panel.rendered });
   return panel.render({ force: true });
 }
@@ -107,6 +108,11 @@ Hooks.once("setup", () => {
 
 Hooks.once("ready", () => {
   engine = new SoundtrackEngine();
+  // The song is this client's own (shuffle differs per listener), so only the display follows it.
+  engine.onTrackChange = title => {
+    refreshSidebar(engine);
+    panel?.setTrack(title);
+  };
   lastState = playback.getState();
 
   // Macro / module API, e.g. game.modules.get("dxcufgbs-scenario-soundtrack").api.playScenario("Combat")
@@ -201,6 +207,7 @@ function debugSnapshot() {
         paused: !!current.paused,
         inStep: current.token === state.token
       } : null,
+      hasTrack: !!engine.track,
       volume: Math.round(engine.volume * 100) / 100,
       syncFailures: engine.failures,
       lastError: engine.lastError,
