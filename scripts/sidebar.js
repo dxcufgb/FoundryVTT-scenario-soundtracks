@@ -32,10 +32,15 @@ function fitLines(bar) {
   }
 }
 
-/** Measures again when a bar gets its size (tab shown, sidebar resized, popped out). */
-const resizeObserver = new ResizeObserver(entries => {
-  for (const entry of entries) fitLines(entry.target);
-});
+/** Measures again when a bar gets its size (tab shown, sidebar resized, popped out). Created on first use. */
+let resizeObserver = null;
+
+function observeBar(bar) {
+  resizeObserver ??= new ResizeObserver(entries => {
+    for (const entry of entries) fitLines(entry.target);
+  });
+  resizeObserver.observe(bar);
+}
 
 function buildBar(engine) {
   const lib = getLibrary();
@@ -136,7 +141,7 @@ export function injectBar(app, html, engine, openPanel) {
   if (!root) return;
   const old = root.querySelector(`.${BAR_CLASS}`);
   if (old) {
-    resizeObserver.unobserve(old);
+    resizeObserver?.unobserve(old);
     old.remove();
   }
   const bar = document.createElement("section");
@@ -146,7 +151,7 @@ export function injectBar(app, html, engine, openPanel) {
   const header = root.querySelector(".directory-header");
   if (header) header.after(bar);
   else root.prepend(bar);
-  resizeObserver.observe(bar);
+  observeBar(bar);
 }
 
 /** Update every bar on the page (sidebar and popped-out Playlists tabs). */
