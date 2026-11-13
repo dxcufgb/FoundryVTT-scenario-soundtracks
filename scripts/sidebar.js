@@ -34,12 +34,20 @@ function fitLines(bar) {
 
 /** Measures again when a bar gets its size (tab shown, sidebar resized, popped out). Created on first use. */
 let resizeObserver = null;
+const observedBars = new Set();
 
 function observeBar(bar) {
+  // Let go of bars whose Playlists tab was re-rendered or closed.
+  for (const old of observedBars) {
+    if (old.isConnected) continue;
+    resizeObserver?.unobserve(old);
+    observedBars.delete(old);
+  }
   resizeObserver ??= new ResizeObserver(entries => {
     for (const entry of entries) fitLines(entry.target);
   });
   resizeObserver.observe(bar);
+  observedBars.add(bar);
 }
 
 function buildBar(engine) {
@@ -142,6 +150,7 @@ export function injectBar(app, html, engine, openPanel) {
   const old = root.querySelector(`.${BAR_CLASS}`);
   if (old) {
     resizeObserver?.unobserve(old);
+    observedBars.delete(old);
     old.remove();
   }
   const bar = document.createElement("section");

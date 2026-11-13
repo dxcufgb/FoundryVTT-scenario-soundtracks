@@ -391,6 +391,8 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
 
   async _onRender(context, options) {
     await super._onRender(context, options);
+    // The song may have changed while this render was under way.
+    this.setTrack(this.track);
     this.#applyFilter();
   }
 

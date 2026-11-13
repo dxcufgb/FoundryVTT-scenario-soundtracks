@@ -417,6 +417,7 @@ export class SpotifyBackend {
     this.player = null;
     this.deviceId = null;
     this.#ready = null;
+    this.onTrack?.("");
     await this.auth.logout();
   }
 }
