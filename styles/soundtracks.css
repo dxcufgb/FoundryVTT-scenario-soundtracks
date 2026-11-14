@@ -38,15 +38,43 @@
   overflow: hidden;
 }
 .sst-bar .sst-now-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
 }
-.sst-bar .sst-now-text span,
+/* Scenario, list and song: one line each; too long lines scroll (sidebar.js fitLines). */
+.sst-bar .sst-line {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.sst-bar .sst-line-scenario {
+  font-weight: bold;
+}
+.sst-bar .sst-line-scenario ~ .sst-line,
+.sst-bar .sst-line-song,
 .sst-bar .sst-now-idle,
 .sst-bar .sst-paused {
   opacity: 0.7;
   font-size: var(--font-size-12, 12px);
+}
+.sst-bar .sst-paused {
+  flex: 0 0 auto;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sst-bar .sst-line.sst-scroll {
+    text-overflow: clip;
+  }
+  .sst-bar .sst-line.sst-scroll span {
+    display: inline-block;
+    animation: sst-scroll var(--sst-duration, 8s) ease-in-out infinite alternate;
+  }
+}
+@keyframes sst-scroll {
+  0%, 15% { transform: translateX(0); }
+  85%, 100% { transform: translateX(var(--sst-shift, 0)); }
 }
 .sst-bar-controls {
   display: flex;
@@ -130,6 +158,12 @@
 .sst-nowbar .sst-now-text span {
   opacity: 0.75;
   font-size: var(--font-size-12, 12px);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.sst-nowbar .sst-now-track[hidden] {
+  display: none;
 }
 .sst-now-controls {
   display: flex;

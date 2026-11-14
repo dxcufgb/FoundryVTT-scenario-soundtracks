@@ -57,6 +57,9 @@ export class YouTubeBackend {
   #errors = 0;
   #wantPlaying = false;
 
+  /** Set by the engine: called with the title of the video that starts playing. */
+  onTrack = null;
+
   /** Last YouTube player error code (2, 5, 100, 101, 150) on this client, for the debug recorder. */
   lastErrorCode = null;
 
@@ -157,6 +160,7 @@ export class YouTubeBackend {
         this.#errors = 0;
         // YouTube sometimes forgets the volume when a new video starts.
         this.setVolume(this.#volume);
+        try { this.onTrack?.(player.getVideoData?.()?.title ?? ""); } catch (err) { /* no title, no display */ }
         if (!this.#wantPlaying) {
           player.pauseVideo();
           break;

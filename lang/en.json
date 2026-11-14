@@ -68,7 +68,10 @@
     "Bar": {
       "Idle": "No soundtrack playing",
       "Playing": "Soundtrack playing",
-      "Paused": "Paused"
+      "Paused": "Paused",
+      "Scenario": "Scenario",
+      "List": "List",
+      "Song": "Current song"
     },
     "Dialog": {
       "Save": "Save",

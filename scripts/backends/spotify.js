@@ -215,6 +215,9 @@ export class SpotifyBackend {
   player = null;
   deviceId = null;
 
+  /** Set by the engine: called with "song – artists" when this device changes track. */
+  onTrack = null;
+
   #ready = null;
   #volume = 0;
   #playing = false;
@@ -283,6 +286,12 @@ export class SpotifyBackend {
         getOAuthToken: callback => {
           this.auth.getAccessToken().then(callback).catch(err => console.error("dxcufgbs-scenario-soundtrack | Spotify token", err));
         }
+      });
+      player.addListener("player_state_changed", state => {
+        const track = state?.track_window?.current_track;
+        if (!track?.name) return;
+        const artists = (track.artists ?? []).map(a => a?.name).filter(Boolean).join(", ");
+        this.onTrack?.(artists ? `${track.name} – ${artists}` : track.name);
       });
       const ready = new Promise((resolve, reject) => {
         player.addListener("ready", ({ device_id }) => {
@@ -408,6 +417,7 @@ export class SpotifyBackend {
     this.player = null;
     this.deviceId = null;
     this.#ready = null;
+    this.onTrack?.("");
     await this.auth.logout();
   }
 }
